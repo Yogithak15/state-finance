@@ -1,0 +1,131 @@
+.growth-league {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 14px;
+  padding: 24px 26px;
+}
+
+.growth-league-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.growth-league-desc {
+  margin: 0 0 20px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.growth-league-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin-bottom: 20px;
+}
+
+.growth-league-controls .control-label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.growth-league-controls .control-select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+  min-width: 180px;
+}
+
+.growth-league-controls .control-select-wide {
+  min-width: 300px;
+}
+
+.growth-league-controls .control-select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.growth-league-empty,
+.growth-league-error {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+  border: 1.5px dashed var(--color-border);
+  border-radius: 12px;
+}
+
+.growth-league-error {
+  color: var(--color-danger-text);
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-bg);
+}
+
+.growth-league-chart {
+  margin-top: 4px;
+}
+
+.growth-league-footnote {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.growth-league-tooltip {
+  background: #101828;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 10px 12px;
+  min-width: 200px;
+}
+
+.growth-league-tooltip-state {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.growth-league-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.growth-league-tooltip-key {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.growth-league-tooltip-value {
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.growth-league-tooltip-period {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+@media (max-width: 700px) {
+  .growth-league-controls .control-select,
+  .growth-league-controls .control-select-wide {
+    min-width: 0;
+    width: 100%;
+  }
+}

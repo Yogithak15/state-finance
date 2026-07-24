@@ -1,0 +1,280 @@
+.rural-wage {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 14px;
+  padding: 24px 26px;
+}
+
+.rural-wage-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.rural-wage-desc {
+  margin: 0 0 20px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.rural-wage-controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin-bottom: 18px;
+}
+
+.rural-wage-control-group {
+  margin-bottom: 18px;
+}
+
+.rural-wage-controls-row .rural-wage-control-group {
+  margin-bottom: 0;
+}
+
+.rural-wage-control-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rural-wage-control-label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.rural-wage-occupation-toggle {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rural-wage-occupation-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.rural-wage-occupation-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.rural-wage-occupation-option.active {
+  color: var(--color-text);
+  border-color: var(--color-accent);
+}
+
+.rural-wage-occupation-option.active .rural-wage-occupation-dot {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  box-shadow: inset 0 0 0 3px var(--color-surface);
+}
+
+.rural-wage-all-india-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.rural-wage-all-india-toggle input {
+  accent-color: var(--color-accent);
+}
+
+.rural-wage-clear-all-link {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-accent);
+  cursor: pointer;
+}
+
+.rural-wage-clear-all-link:hover {
+  text-decoration: underline;
+}
+
+/* State search + pills */
+.rural-wage-state-search-input {
+  width: 100%;
+  max-width: 420px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13.5px;
+  color: var(--color-text);
+  margin-bottom: 12px;
+}
+
+.rural-wage-state-search-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.rural-wage-state-pill-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rural-wage-state-pill {
+  appearance: none;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  padding: 6px 13px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.rural-wage-state-pill:hover {
+  border-color: var(--color-accent);
+}
+
+.rural-wage-state-pill.selected {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.rural-wage-state-pill-empty {
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+/* Chart states */
+.rural-wage-empty,
+.rural-wage-error {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+  border: 1.5px dashed var(--color-border);
+  border-radius: 12px;
+}
+
+.rural-wage-error {
+  color: var(--color-danger-text);
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-bg);
+}
+
+.rural-wage-chart {
+  margin-top: 4px;
+}
+
+.rural-wage-footnote {
+  margin-top: 12px;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+/* Tooltip */
+.rural-wage-tooltip {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 10px;
+  padding: 10px 12px;
+  min-width: 180px;
+}
+
+.rural-wage-tooltip-period {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+
+.rural-wage-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.rural-wage-tooltip-key {
+  width: 10px;
+  height: 3px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.rural-wage-tooltip-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.rural-wage-tooltip-name {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* Legend */
+.rural-wage-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  padding-top: 12px;
+}
+
+.rural-wage-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.rural-wage-legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+@media (max-width: 700px) {
+  .rural-wage-state-search-input {
+    max-width: 100%;
+  }
+}

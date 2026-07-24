@@ -1,0 +1,229 @@
+.deficit-trends {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 14px;
+  padding: 24px 26px;
+}
+
+.deficit-trends-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.deficit-trends-desc {
+  margin: 0 0 14px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.deficit-trends-sign-note {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+  margin-bottom: 18px;
+}
+
+.deficit-trends-control-group {
+  margin-bottom: 18px;
+}
+
+.deficit-trends-control-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.deficit-trends-control-label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.deficit-trends-measure-select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+  min-width: 220px;
+}
+
+.deficit-trends-measure-select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.deficit-trends-clear-all-link {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-accent);
+  cursor: pointer;
+}
+
+.deficit-trends-clear-all-link:hover {
+  text-decoration: underline;
+}
+
+/* State search + pills */
+.deficit-trends-state-search-input {
+  width: 100%;
+  max-width: 420px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13.5px;
+  color: var(--color-text);
+  margin-bottom: 12px;
+}
+
+.deficit-trends-state-search-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.deficit-trends-state-pill-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.deficit-trends-state-pill {
+  appearance: none;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  padding: 6px 13px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.deficit-trends-state-pill:hover {
+  border-color: var(--color-accent);
+}
+
+.deficit-trends-state-pill.selected {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.deficit-trends-state-pill-empty {
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+/* Chart states */
+.deficit-trends-empty,
+.deficit-trends-error {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+  border: 1.5px dashed var(--color-border);
+  border-radius: 12px;
+}
+
+.deficit-trends-error {
+  color: var(--color-danger-text);
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-bg);
+}
+
+.deficit-trends-chart {
+  margin-top: 4px;
+}
+
+/* Tooltip */
+.deficit-trends-tooltip {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 10px;
+  padding: 10px 12px;
+  min-width: 180px;
+}
+
+.deficit-trends-tooltip-period {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+
+.deficit-trends-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.deficit-trends-tooltip-key {
+  width: 10px;
+  height: 3px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.deficit-trends-tooltip-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.deficit-trends-tooltip-name {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* Legend */
+.deficit-trends-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  padding-top: 12px;
+}
+
+.deficit-trends-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.deficit-trends-legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+@media (max-width: 700px) {
+  .deficit-trends-state-search-input {
+    max-width: 100%;
+  }
+}

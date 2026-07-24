@@ -1,13 +1,137 @@
+:root {
+  --color-bg: #f4f6fb;
+  --color-surface: #ffffff;
+  --color-border: #e5e9f2;
+  --color-text: #101828;
+  --color-text-muted: #64748b;
+  --color-sidebar-bg: #ffffff;
+  --color-sidebar-bg-active: #e8edff;
+  --color-sidebar-text: #64748b;
+  --color-sidebar-text-active: #101828;
+  --color-accent: #4f7cff;
+  --color-accent-soft: #e8edff;
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
+
+  --color-hover-tint: #fafbff;
+  --color-hover-border: #c7d2fe;
+  --color-danger-text: #b42318;
+  --color-danger-bg: #fef3f2;
+  --color-danger-border: #fda29b;
+
+  --color-scrollbar-thumb: #cbd5e1;
+  --color-scrollbar-thumb-hover: #94a3b8;
+
+  /* Chart tokens — consumed in JS by src/theme/chartColors.ts (SVG props
+     can't reliably resolve CSS custom properties across browsers, so chart
+     code reads the resolved hex via useTheme() instead of these variables
+     directly). Kept here too so the two stay documented side by side. */
+  --chart-grid: #e5e9f2;
+  --chart-axis-text: #64748b;
+  --chart-tooltip-bg: #ffffff;
+  --chart-tooltip-border: #e5e9f2;
+  --chart-ink: #101828;
+  --chart-surface: #fcfcfb;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme='light'])) {
+    /* Reuses the sidebar's own navy tones instead of a generic near-black. */
+    --color-bg: #0f172a;
+    --color-surface: #1a2740;
+    --color-border: #2a3a5c;
+    --color-text: #f1f5f9;
+    --color-text-muted: #94a3b8;
+    --color-sidebar-bg: #0f172a;
+    --color-sidebar-bg-active: #1a2740;
+    --color-sidebar-text: #94a3b8;
+    --color-sidebar-text-active: #ffffff;
+    --color-accent: #6f92ff;
+    --color-accent-soft: #22304d;
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.5);
+
+    --color-hover-tint: #22304d;
+    --color-hover-border: #3a4d78;
+    --color-danger-text: #ff8080;
+    --color-danger-bg: #3b1214;
+    --color-danger-border: #7a2e2e;
+
+    --color-scrollbar-thumb: #2a3a5c;
+    --color-scrollbar-thumb-hover: #3a4d78;
+
+    --chart-grid: #2a3a5c;
+    --chart-axis-text: #94a3b8;
+    --chart-tooltip-bg: #1a2740;
+    --chart-tooltip-border: #2a3a5c;
+    --chart-ink: #f1f5f9;
+    --chart-surface: #0f172a;
+  }
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #0f172a;
+  --color-surface: #1a2740;
+  --color-border: #2a3a5c;
+  --color-text: #f1f5f9;
+  --color-text-muted: #94a3b8;
+  --color-sidebar-bg: #0f172a;
+  --color-sidebar-bg-active: #1a2740;
+  --color-sidebar-text: #94a3b8;
+  --color-sidebar-text-active: #ffffff;
+  --color-accent: #6f92ff;
+  --color-accent-soft: #22304d;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.5);
+
+  --color-hover-tint: #22304d;
+  --color-hover-border: #3a4d78;
+  --color-danger-text: #ff8080;
+  --color-danger-bg: #3b1214;
+  --color-danger-border: #7a2e2e;
+
+  --color-scrollbar-thumb: #2a3a5c;
+  --color-scrollbar-thumb-hover: #3a4d78;
+
+  --chart-grid: #2a3a5c;
+  --chart-axis-text: #94a3b8;
+  --chart-tooltip-bg: #1a2740;
+  --chart-tooltip-border: #2a3a5c;
+  --chart-ink: #f1f5f9;
+  --chart-surface: #0f172a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Helvetica Neue', sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar-thumb);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-scrollbar-thumb-hover);
 }

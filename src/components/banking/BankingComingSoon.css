@@ -1,0 +1,22 @@
+.banking-coming-soon {
+  min-height: 320px;
+  border-radius: 14px;
+  border: 1.5px dashed var(--color-border);
+  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.banking-coming-soon-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.banking-coming-soon-hint {
+  font-size: 13px;
+  color: var(--color-text-muted);
+}

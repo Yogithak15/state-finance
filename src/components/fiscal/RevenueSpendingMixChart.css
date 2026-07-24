@@ -1,0 +1,191 @@
+.revenue-spending-mix {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 14px;
+  padding: 24px 26px;
+}
+
+.revenue-spending-mix-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.revenue-spending-mix-desc {
+  margin: 0 0 16px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.revenue-spending-mix-subdesc {
+  margin: 12px 0 18px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.revenue-spending-mix-view-toggle {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.revenue-spending-view-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.revenue-spending-view-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.revenue-spending-view-option.active {
+  color: var(--color-text);
+  border-color: var(--color-accent);
+}
+
+.revenue-spending-view-option.active .revenue-spending-view-dot {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  box-shadow: inset 0 0 0 3px var(--color-surface);
+}
+
+.revenue-spending-mix-control-group {
+  margin-bottom: 20px;
+}
+
+.revenue-spending-mix-control-label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.revenue-spending-mix-state-select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+  min-width: 200px;
+}
+
+.revenue-spending-mix-state-select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.revenue-spending-mix-empty,
+.revenue-spending-mix-error {
+  min-height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+  border: 1.5px dashed var(--color-border);
+  border-radius: 12px;
+}
+
+.revenue-spending-mix-error {
+  color: var(--color-danger-text);
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-bg);
+}
+
+.revenue-spending-mix-chart {
+  margin-top: 4px;
+}
+
+.revenue-spending-mix-footnote {
+  margin-top: 12px;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+/* Tooltip */
+.revenue-spending-mix-tooltip {
+  background: #101828;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 10px 12px;
+  min-width: 200px;
+}
+
+.revenue-spending-mix-tooltip-period {
+  font-size: 12.5px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.revenue-spending-mix-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.revenue-spending-mix-tooltip-key {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.revenue-spending-mix-tooltip-name {
+  font-size: 12px;
+  opacity: 0.85;
+  flex: 1;
+}
+
+.revenue-spending-mix-tooltip-value {
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+/* Legend */
+.revenue-spending-mix-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.revenue-spending-mix-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.revenue-spending-mix-legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}

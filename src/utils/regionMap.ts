@@ -1,0 +1,46 @@
+export type Region = 'North' | 'Central' | 'East' | 'West' | 'South' | 'Northeast' | 'Islands';
+
+// India's Zonal Council groupings (plus Islands, commonly split out separately)
+// — real administrative geography, not derived from the API (it has no region field).
+export const REGION_MAP: Record<string, Region> = {
+  Haryana: 'North',
+  'Himachal Pradesh': 'North',
+  Punjab: 'North',
+  Rajasthan: 'North',
+  Delhi: 'North',
+  Chandigarh: 'North',
+  'Jammu and Kashmir': 'North',
+  Ladakh: 'North',
+  Chhattisgarh: 'Central',
+  'Madhya Pradesh': 'Central',
+  'Uttar Pradesh': 'Central',
+  Uttarakhand: 'Central',
+  Bihar: 'East',
+  Jharkhand: 'East',
+  Odisha: 'East',
+  'West Bengal': 'East',
+  Goa: 'West',
+  Gujarat: 'West',
+  Maharashtra: 'West',
+  'Dadra & Nagar Haveli': 'West',
+  'Dadra & Nagar Haveli And Daman & Diu': 'West',
+  'Daman & Diu': 'West',
+  'Andhra Pradesh': 'South',
+  Karnataka: 'South',
+  Kerala: 'South',
+  'Tamil Nadu': 'South',
+  Telangana: 'South',
+  Puducherry: 'South',
+  'Arunachal Pradesh': 'Northeast',
+  Assam: 'Northeast',
+  Manipur: 'Northeast',
+  Meghalaya: 'Northeast',
+  Mizoram: 'Northeast',
+  Nagaland: 'Northeast',
+  Sikkim: 'Northeast',
+  Tripura: 'Northeast',
+  'Andaman & Nicobar Islands': 'Islands',
+  Lakshadweep: 'Islands',
+};
+
+export const REGION_ORDER: Region[] = ['North', 'Central', 'East', 'West', 'South', 'Northeast', 'Islands'];

@@ -1,0 +1,204 @@
+.fiscal-stress-map {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 14px;
+  padding: 24px 26px;
+}
+
+.fiscal-stress-map-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.fiscal-stress-map-desc {
+  margin: 0 0 20px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.fiscal-stress-map-control-group {
+  margin-bottom: 20px;
+}
+
+.fiscal-stress-map-control-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fiscal-stress-map-control-label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.fiscal-stress-map-clear-all-link {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-accent);
+  cursor: pointer;
+}
+
+.fiscal-stress-map-clear-all-link:hover {
+  text-decoration: underline;
+}
+
+.fiscal-stress-map-state-search-input {
+  width: 100%;
+  max-width: 420px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13.5px;
+  color: var(--color-text);
+  margin-bottom: 12px;
+}
+
+.fiscal-stress-map-state-search-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.fiscal-stress-map-state-pill-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fiscal-stress-map-state-pill {
+  appearance: none;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  padding: 6px 13px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.fiscal-stress-map-state-pill:hover {
+  border-color: var(--color-accent);
+}
+
+.fiscal-stress-map-state-pill.selected {
+  border-color: #d4a017;
+  background: rgba(212, 160, 23, 0.16);
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.fiscal-stress-map-state-pill-empty {
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+.fiscal-stress-map-empty,
+.fiscal-stress-map-error {
+  min-height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+  border: 1.5px dashed var(--color-border);
+  border-radius: 12px;
+}
+
+.fiscal-stress-map-error {
+  color: var(--color-danger-text);
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-bg);
+}
+
+.fiscal-stress-map-chart-wrap {
+  margin-top: 4px;
+}
+
+.fiscal-stress-map-axis-caption-y,
+.fiscal-stress-map-axis-caption-x {
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.fiscal-stress-map-axis-caption-y {
+  margin-bottom: 4px;
+}
+
+.fiscal-stress-map-axis-caption-x {
+  margin-top: 6px;
+}
+
+.fiscal-stress-map-footnote {
+  margin-top: 12px;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+/* Legend */
+.fiscal-stress-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  padding-top: 4px;
+}
+
+.fiscal-stress-map-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.fiscal-stress-map-legend-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Tooltip */
+.fiscal-stress-map-tooltip {
+  background: #101828;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  max-width: 300px;
+}
+
+.fiscal-stress-map-tooltip-key {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 700px) {
+  .fiscal-stress-map-state-search-input {
+    max-width: 100%;
+  }
+}

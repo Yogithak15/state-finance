@@ -1,0 +1,99 @@
+.state-search-select {
+  position: relative;
+  width: 240px;
+  max-width: 100%;
+}
+
+.state-search-select-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+  cursor: pointer;
+  text-align: left;
+}
+
+.state-search-select-trigger:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.state-search-select-caret {
+  color: var(--color-text-muted);
+  font-size: 11px;
+  flex-shrink: 0;
+}
+
+.state-search-select-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  min-width: 240px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 10px;
+  padding: 8px;
+  z-index: 20;
+}
+
+.state-search-select-input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13px;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+.state-search-select-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.state-search-select-list {
+  max-height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.state-search-select-option {
+  appearance: none;
+  border: none;
+  background: none;
+  text-align: left;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.state-search-select-option:hover {
+  background: var(--color-bg);
+}
+
+.state-search-select-option.selected {
+  background: var(--color-accent);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.state-search-select-empty {
+  padding: 8px 10px;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}

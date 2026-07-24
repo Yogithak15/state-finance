@@ -1,0 +1,331 @@
+.debt-liabilities {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 14px;
+  padding: 24px 26px;
+}
+
+.debt-liabilities-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.debt-liabilities-desc {
+  margin: 0 0 16px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.debt-liabilities-subdesc {
+  margin: 12px 0 18px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.debt-liabilities-view-toggle {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.debt-liabilities-view-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.debt-liabilities-view-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.debt-liabilities-view-option.active {
+  color: var(--color-text);
+  border-color: var(--color-accent);
+}
+
+.debt-liabilities-view-option.active .debt-liabilities-view-dot {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  box-shadow: inset 0 0 0 3px var(--color-surface);
+}
+
+.debt-liabilities-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin-bottom: 20px;
+}
+
+.debt-liabilities-control-group {
+  margin-bottom: 18px;
+}
+
+.debt-liabilities-control-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.debt-liabilities-control-label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.debt-liabilities-control-select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+  min-width: 140px;
+}
+
+.debt-liabilities-control-select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.debt-liabilities-show-toggle {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.debt-liabilities-show-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.debt-liabilities-show-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.debt-liabilities-show-option.active {
+  color: var(--color-text);
+  border-color: var(--color-accent);
+}
+
+.debt-liabilities-show-option.active .debt-liabilities-show-dot {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  box-shadow: inset 0 0 0 3px var(--color-surface);
+}
+
+.debt-liabilities-clear-all-link {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-accent);
+  cursor: pointer;
+}
+
+.debt-liabilities-clear-all-link:hover {
+  text-decoration: underline;
+}
+
+/* State search + pills */
+.debt-liabilities-state-search-input {
+  width: 100%;
+  max-width: 420px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13.5px;
+  color: var(--color-text);
+  margin-bottom: 12px;
+}
+
+.debt-liabilities-state-search-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.debt-liabilities-state-pill-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.debt-liabilities-state-pill {
+  appearance: none;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  padding: 6px 13px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.debt-liabilities-state-pill:hover {
+  border-color: var(--color-accent);
+}
+
+.debt-liabilities-state-pill.selected {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.debt-liabilities-state-pill-empty {
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+.debt-liabilities-empty,
+.debt-liabilities-error {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+  border: 1.5px dashed var(--color-border);
+  border-radius: 12px;
+}
+
+.debt-liabilities-error {
+  color: var(--color-danger-text);
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-bg);
+}
+
+.debt-liabilities-chart {
+  margin-top: 4px;
+}
+
+.debt-liabilities-footnote {
+  margin-top: 14px;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+/* Tooltip */
+.debt-liabilities-tooltip {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 10px;
+  padding: 10px 12px;
+  min-width: 200px;
+}
+
+.debt-liabilities-tooltip-period {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+
+.debt-liabilities-tooltip-total {
+  font-size: 11.5px;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+
+.debt-liabilities-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.debt-liabilities-tooltip-key {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.debt-liabilities-tooltip-value {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.debt-liabilities-tooltip-name {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* Legend */
+.debt-liabilities-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  padding-top: 12px;
+}
+
+.debt-liabilities-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.debt-liabilities-legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+@media (max-width: 700px) {
+  .debt-liabilities-controls {
+    gap: 16px;
+  }
+  .debt-liabilities-control-select {
+    min-width: 0;
+    width: 100%;
+  }
+  .debt-liabilities-state-search-input {
+    max-width: 100%;
+  }
+}

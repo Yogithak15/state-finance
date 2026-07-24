@@ -1,0 +1,169 @@
+/* Shared visual language for every State Profile dataset section. */
+
+.state-profile-section {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 14px;
+  padding: 24px 26px;
+  margin-bottom: 22px;
+}
+
+.state-profile-section-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.state-profile-section-desc {
+  margin: 0 0 18px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.state-profile-section-error,
+.state-profile-section-empty {
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+  border: 1.5px dashed var(--color-border);
+  border-radius: 12px;
+}
+
+.state-profile-section-error {
+  color: var(--color-danger-text);
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-bg);
+}
+
+/* Stat tiles */
+.state-profile-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.state-profile-stat-tile {
+  flex: 1 1 200px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.state-profile-stat-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.state-profile-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.state-profile-stat-hint {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* Chart grid + blocks */
+.state-profile-chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 20px;
+}
+
+.state-profile-chart-block {
+  min-width: 0;
+}
+
+.state-profile-chart-title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* Tooltip */
+.state-profile-tooltip {
+  background: #101828;
+  color: #ffffff;
+  border-radius: 8px;
+  padding: 9px 11px;
+  min-width: 170px;
+}
+
+.state-profile-tooltip-period {
+  font-size: 11.5px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.state-profile-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 1.5px 0;
+}
+
+.state-profile-tooltip-key {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.state-profile-tooltip-name {
+  font-size: 11.5px;
+  opacity: 0.85;
+  flex: 1;
+}
+
+.state-profile-tooltip-value {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Legend */
+.state-profile-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  padding-top: 6px;
+}
+
+.state-profile-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.state-profile-legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+@media (max-width: 700px) {
+  .state-profile-chart-grid {
+    grid-template-columns: 1fr;
+  }
+}

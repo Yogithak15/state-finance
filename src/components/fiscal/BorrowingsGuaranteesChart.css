@@ -1,0 +1,206 @@
+.borrowings-guarantees {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 14px;
+  padding: 24px 26px;
+}
+
+.borrowings-guarantees-title {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.borrowings-guarantees-desc {
+  margin: 0 0 16px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.borrowings-guarantees-subdesc {
+  margin: 12px 0 18px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.borrowings-guarantees-view-toggle {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.borrowings-guarantees-view-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.borrowings-guarantees-view-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.borrowings-guarantees-view-option.active {
+  color: var(--color-text);
+  border-color: var(--color-accent);
+}
+
+.borrowings-guarantees-view-option.active .borrowings-guarantees-view-dot {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  box-shadow: inset 0 0 0 3px var(--color-surface);
+}
+
+.borrowings-guarantees-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin-bottom: 20px;
+}
+
+.borrowings-guarantees-control-group {
+  margin-bottom: 20px;
+}
+
+.borrowings-guarantees-control-label {
+  display: block;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.borrowings-guarantees-control-select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text);
+  min-width: 200px;
+}
+
+.borrowings-guarantees-control-select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.borrowings-guarantees-show-toggle {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.borrowings-guarantees-show-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.borrowings-guarantees-show-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.borrowings-guarantees-show-option.active {
+  color: var(--color-text);
+  border-color: var(--color-accent);
+}
+
+.borrowings-guarantees-show-option.active .borrowings-guarantees-show-dot {
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  box-shadow: inset 0 0 0 3px var(--color-surface);
+}
+
+.borrowings-guarantees-empty,
+.borrowings-guarantees-error {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  color: var(--color-text-muted);
+  border: 1.5px dashed var(--color-border);
+  border-radius: 12px;
+  text-align: center;
+  padding: 16px;
+}
+
+.borrowings-guarantees-error {
+  color: var(--color-danger-text);
+  border-color: var(--color-danger-border);
+  background: var(--color-danger-bg);
+}
+
+.borrowings-guarantees-chart {
+  margin-top: 4px;
+}
+
+.borrowings-guarantees-footnote {
+  margin-top: 14px;
+  font-size: 12px;
+  font-style: italic;
+  color: var(--color-text-muted);
+}
+
+.borrowings-guarantees-tooltip {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+}
+
+.borrowings-guarantees-tooltip-name {
+  color: var(--color-text-muted);
+}
+
+.borrowings-guarantees-tooltip-value {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+@media (max-width: 700px) {
+  .borrowings-guarantees-controls {
+    gap: 16px;
+  }
+  .borrowings-guarantees-control-select {
+    min-width: 0;
+    width: 100%;
+  }
+}
