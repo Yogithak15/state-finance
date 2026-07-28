@@ -243,6 +243,18 @@
 }
 
 @media (max-width: 700px) {
+  .credit-deposit-ratio {
+    padding: 16px 16px;
+  }
+
+  .credit-deposit-ratio-title {
+    font-size: 15px;
+  }
+
+  .credit-deposit-ratio-desc {
+    font-size: 13px;
+  }
+
   .credit-deposit-state-search-input {
     max-width: 100%;
   }

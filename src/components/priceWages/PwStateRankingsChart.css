@@ -152,11 +152,27 @@
 }
 
 @media (max-width: 700px) {
+  .pw-rankings {
+    padding: 18px 16px;
+  }
+
+  .pw-rankings-title {
+    font-size: 16px;
+  }
+
+  .pw-rankings-desc {
+    font-size: 13px;
+  }
+
   .pw-rankings-controls {
     gap: 16px;
   }
   .pw-control-select {
     min-width: 0;
     width: 100%;
+  }
+
+  .pw-show-toggle {
+    flex-wrap: wrap;
   }
 }

@@ -207,20 +207,24 @@ const IncomeTrendsChart: React.FC = () => {
       {!error && selected.length > 0 && (
         <div className="income-trends-chart">
           <ResponsiveContainer width="100%" height={380}>
-            <LineChart data={chartData} margin={{ top: 8, right: 24, left: 8, bottom: 8 }}>
+            <LineChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
               <CartesianGrid stroke={colors.grid} />
               <XAxis
                 dataKey="period"
-                tick={{ fontSize: 12, fill: colors.axisText }}
+                tick={{ fontSize: 11, fill: colors.axisText }}
                 axisLine={{ stroke: colors.grid }}
                 tickLine={false}
+                interval="preserveStartEnd"
+                minTickGap={16}
               />
               <YAxis
-                tick={{ fontSize: 12, fill: colors.axisText }}
+                tick={(props: { y?: number | string; payload?: { value: number } }) => (
+                  <LeftAlignedYAxisTick {...props} fill={colors.axisText} />
+                )}
                 axisLine={false}
                 tickLine={false}
                 tickFormatter={(v: number) => formatInrShort(v)}
-                width={92}
+                width={44}
               />
               <Tooltip content={(props) => <IncomeTrendsTooltip {...props} />} />
               <Legend content={(props) => <IncomeTrendsLegend {...props} />} />
@@ -243,6 +247,19 @@ const IncomeTrendsChart: React.FC = () => {
     </div>
   );
 };
+
+// Left-aligned so every value starts flush at the card's left edge — same as
+// the state pill labels above the chart — instead of recharts' default
+// right-aligned ticks, which ragged-left differently-lengthed values.
+const LeftAlignedYAxisTick: React.FC<{ y?: number | string; payload?: { value: number }; fill: string }> = ({
+  y,
+  payload,
+  fill,
+}) => (
+  <text x={4} y={y} dy={4} fontSize={11} fill={fill} textAnchor="start">
+    {formatInrShort(payload?.value ?? 0)}
+  </text>
+);
 
 // Value leads (bold), state name follows, keyed by a short line — not a colored box.
 const IncomeTrendsTooltip: React.FC<TooltipContentProps> = ({ active, payload, label }) => {

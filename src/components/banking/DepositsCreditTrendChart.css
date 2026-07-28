@@ -213,6 +213,18 @@
 }
 
 @media (max-width: 700px) {
+  .deposits-credit-trend {
+    padding: 16px 16px;
+  }
+
+  .deposits-credit-trend-title {
+    font-size: 15px;
+  }
+
+  .deposits-credit-trend-desc {
+    font-size: 13px;
+  }
+
   .deposits-credit-state-search-input {
     max-width: 100%;
   }

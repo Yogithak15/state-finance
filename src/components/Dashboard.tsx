@@ -14,6 +14,7 @@ import './Dashboard.css';
 const Dashboard: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<CategoryId>(CATEGORIES[0].id);
   const category = CATEGORIES.find((c) => c.id === activeCategory) ?? CATEGORIES[0];
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   const [sdpStats, setSdpStats] = useState<SdpSummaryStats | null>(null);
   const [sdpError, setSdpError] = useState<string | null>(null);
@@ -72,9 +73,14 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="dashboard">
-      <Sidebar activeCategory={activeCategory} onSelectCategory={setActiveCategory} />
+      <Sidebar
+        activeCategory={activeCategory}
+        onSelectCategory={setActiveCategory}
+        isOpen={isSidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
       <main className="dashboard-main">
-        <Topbar category={category} />
+        <Topbar category={category} onMenuClick={() => setSidebarOpen(true)} />
         <CategoryPanel
           category={category}
           sdpStats={sdpStats}

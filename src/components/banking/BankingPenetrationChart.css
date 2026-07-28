@@ -151,6 +151,18 @@
 }
 
 @media (max-width: 700px) {
+  .banking-penetration {
+    padding: 16px 16px;
+  }
+
+  .banking-penetration-title {
+    font-size: 15px;
+  }
+
+  .banking-penetration-desc {
+    font-size: 13px;
+  }
+
   .banking-penetration-controls {
     gap: 16px;
   }

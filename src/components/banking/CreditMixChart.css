@@ -196,6 +196,18 @@
 }
 
 @media (max-width: 700px) {
+  .credit-mix {
+    padding: 16px 16px;
+  }
+
+  .credit-mix-title {
+    font-size: 15px;
+  }
+
+  .credit-mix-desc {
+    font-size: 13px;
+  }
+
   .credit-mix-controls {
     gap: 16px;
   }

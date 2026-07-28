@@ -215,6 +215,18 @@
 }
 
 @media (max-width: 700px) {
+  .inflation-trends {
+    padding: 18px 16px;
+  }
+
+  .inflation-trends-title {
+    font-size: 16px;
+  }
+
+  .inflation-trends-desc {
+    font-size: 13px;
+  }
+
   .inflation-state-search-input {
     max-width: 100%;
   }

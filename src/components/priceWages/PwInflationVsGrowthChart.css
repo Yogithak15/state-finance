@@ -122,3 +122,17 @@
   border-radius: 2px;
   flex-shrink: 0;
 }
+
+@media (max-width: 700px) {
+  .pw-inflation-growth {
+    padding: 18px 16px;
+  }
+
+  .pw-inflation-growth-title {
+    font-size: 16px;
+  }
+
+  .pw-inflation-growth-desc {
+    font-size: 13px;
+  }
+}

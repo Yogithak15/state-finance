@@ -93,3 +93,15 @@ export const MoonIcon: React.FC<IconProps> = (props) => (
     <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z" />
   </svg>
 );
+
+export const MenuIcon: React.FC<IconProps> = (props) => (
+  <svg {...base} {...props}>
+    <path d="M3 6h18M3 12h18M3 18h18" />
+  </svg>
+);
+
+export const CloseIcon: React.FC<IconProps> = (props) => (
+  <svg {...base} {...props}>
+    <path d="M18 6 6 18M6 6l12 12" />
+  </svg>
+);

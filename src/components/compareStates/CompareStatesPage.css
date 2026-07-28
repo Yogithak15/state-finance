@@ -206,4 +206,12 @@
   .compare-states-metric-select {
     max-width: 100%;
   }
+
+  .compare-states {
+    padding: 16px 16px;
+  }
+
+  .compare-states-stat-tile {
+    flex: 1 1 140px;
+  }
 }

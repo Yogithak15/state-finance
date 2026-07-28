@@ -1,6 +1,8 @@
 .pw-tabs-nav {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   gap: 4px;
   border-bottom: 1px solid var(--color-border);
   margin-bottom: 20px;
@@ -16,6 +18,8 @@
   font-weight: 600;
   color: var(--color-text-muted);
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: color 0.15s ease, border-color 0.15s ease;
 }
 
@@ -26,4 +30,11 @@
 .pw-tab.active {
   color: var(--color-text);
   border-bottom-color: var(--color-accent);
+}
+
+@media (max-width: 700px) {
+  .pw-tab {
+    padding: 8px 10px 10px;
+    font-size: 12.5px;
+  }
 }

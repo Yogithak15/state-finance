@@ -77,10 +77,12 @@
   overflow-y: auto;
   border: 1px solid var(--color-border);
   border-radius: 10px;
+  -webkit-overflow-scrolling: touch;
 }
 
 .growth-heatmap-table {
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   font-size: 12px;
   width: 100%;
 }
@@ -119,7 +121,7 @@
   text-align: left;
   font-weight: 500;
   color: var(--color-text);
-  border-right: 1px solid var(--color-border);
+  box-shadow: 1px 0 0 var(--color-border);
   z-index: 1;
   padding-right: 0;
   max-width: 150px;
@@ -135,4 +137,15 @@
 
 .growth-heatmap-cell-empty {
   background: var(--color-bg);
+}
+
+@media (max-width: 700px) {
+  .growth-heatmap-controls {
+    gap: 16px;
+  }
+
+  .growth-heatmap-controls .control-select {
+    min-width: 0;
+    width: 100%;
+  }
 }

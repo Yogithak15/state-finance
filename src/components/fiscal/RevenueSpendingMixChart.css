@@ -189,3 +189,27 @@
   border-radius: 50%;
   flex-shrink: 0;
 }
+
+@media (max-width: 700px) {
+  .revenue-spending-mix {
+    padding: 18px 16px;
+  }
+
+  .revenue-spending-mix-title {
+    font-size: 16px;
+  }
+
+  .revenue-spending-mix-desc,
+  .revenue-spending-mix-subdesc {
+    font-size: 13px;
+  }
+
+  .revenue-spending-mix-view-toggle {
+    flex-wrap: wrap;
+  }
+
+  .revenue-spending-mix-state-select {
+    min-width: 0;
+    width: 100%;
+  }
+}

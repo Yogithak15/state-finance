@@ -166,4 +166,16 @@
   .state-profile-chart-grid {
     grid-template-columns: 1fr;
   }
+
+  .state-profile-section {
+    padding: 16px 16px;
+  }
+
+  .state-profile-stats {
+    gap: 10px;
+  }
+
+  .state-profile-stat-tile {
+    flex: 1 1 140px;
+  }
 }

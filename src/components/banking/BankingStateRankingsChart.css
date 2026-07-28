@@ -151,6 +151,18 @@
 }
 
 @media (max-width: 700px) {
+  .banking-rankings {
+    padding: 16px 16px;
+  }
+
+  .banking-rankings-title {
+    font-size: 15px;
+  }
+
+  .banking-rankings-desc {
+    font-size: 13px;
+  }
+
   .banking-rankings-controls {
     gap: 16px;
   }

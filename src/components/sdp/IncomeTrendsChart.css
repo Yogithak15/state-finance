@@ -246,4 +246,16 @@
   .state-search-input {
     max-width: 100%;
   }
+
+  .income-trends {
+    padding: 16px;
+  }
+
+  .income-trends-title {
+    font-size: 15px;
+  }
+
+  .income-trends-desc {
+    font-size: 13px;
+  }
 }

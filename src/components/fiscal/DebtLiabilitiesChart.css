@@ -318,6 +318,24 @@
 }
 
 @media (max-width: 700px) {
+  .debt-liabilities {
+    padding: 18px 16px;
+  }
+
+  .debt-liabilities-title {
+    font-size: 16px;
+  }
+
+  .debt-liabilities-desc,
+  .debt-liabilities-subdesc {
+    font-size: 13px;
+  }
+
+  .debt-liabilities-view-toggle,
+  .debt-liabilities-show-toggle {
+    flex-wrap: wrap;
+  }
+
   .debt-liabilities-controls {
     gap: 16px;
   }

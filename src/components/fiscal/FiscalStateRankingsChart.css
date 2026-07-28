@@ -151,6 +151,22 @@
 }
 
 @media (max-width: 700px) {
+  .fiscal-rankings {
+    padding: 18px 16px;
+  }
+
+  .fiscal-rankings-title {
+    font-size: 16px;
+  }
+
+  .fiscal-rankings-desc {
+    font-size: 13px;
+  }
+
+  .fiscal-rankings-show-toggle {
+    flex-wrap: wrap;
+  }
+
   .fiscal-rankings-controls {
     gap: 16px;
   }

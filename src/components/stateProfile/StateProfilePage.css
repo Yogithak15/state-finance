@@ -56,4 +56,8 @@
   .state-profile-header {
     flex-direction: column;
   }
+
+  .state-profile-page-control {
+    width: 100%;
+  }
 }

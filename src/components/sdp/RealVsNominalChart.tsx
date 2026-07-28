@@ -157,7 +157,7 @@ const RealVsNominalChart: React.FC = () => {
         <>
           <div className="real-vs-nominal-chart">
             <ResponsiveContainer width="100%" height={380}>
-              <ComposedChart data={chartData} margin={{ top: 8, right: 24, left: 8, bottom: 8 }}>
+              <ComposedChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
                 <defs>
                   <linearGradient id="realVsNominalGapGradient" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor={NOMINAL_COLOR} stopOpacity={0.55} />
@@ -167,16 +167,18 @@ const RealVsNominalChart: React.FC = () => {
                 <CartesianGrid stroke={colors.grid} />
                 <XAxis
                   dataKey="period"
-                  tick={{ fontSize: 12, fill: colors.axisText }}
+                  tick={{ fontSize: 11, fill: colors.axisText }}
                   axisLine={{ stroke: colors.grid }}
                   tickLine={false}
+                  interval="preserveStartEnd"
+                  minTickGap={16}
                 />
                 <YAxis
-                  tick={{ fontSize: 12, fill: colors.axisText }}
+                  tick={{ fontSize: 11, fill: colors.axisText }}
                   axisLine={false}
                   tickLine={false}
                   tickFormatter={(v: number) => formatInrShort(v)}
-                  width={90}
+                  width={56}
                 />
                 <Tooltip content={(props) => <RealVsNominalTooltip {...props} />} />
                 <Legend content={(props) => <RealVsNominalLegend {...props} />} />

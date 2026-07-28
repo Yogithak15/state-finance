@@ -122,3 +122,21 @@
   border-radius: 2px;
   flex-shrink: 0;
 }
+
+@media (max-width: 700px) {
+  .rural-urban-reach {
+    padding: 16px 16px;
+  }
+
+  .rural-urban-reach-title {
+    font-size: 15px;
+  }
+
+  .rural-urban-reach-desc {
+    font-size: 13px;
+  }
+
+  .rural-urban-axis-title-y {
+    font-size: 11px;
+  }
+}

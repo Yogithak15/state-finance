@@ -144,7 +144,29 @@
 }
 
 @media (max-width: 700px) {
+  .fiscal-key-metrics {
+    padding: 16px 16px 14px;
+  }
+
+  .fiscal-key-metrics-header {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .fiscal-key-metrics-state-select {
+    min-width: 0;
+  }
+
   .fiscal-key-metrics-grid {
     grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .fiscal-key-metric-card {
+    padding: 14px 14px;
+  }
+
+  .fiscal-key-metric-value {
+    font-size: 19px;
   }
 }

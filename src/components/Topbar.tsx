@@ -1,21 +1,32 @@
 import React from 'react';
 import { Category } from '../types';
 import { useTheme } from '../theme/ThemeContext';
-import { SunIcon, MoonIcon } from './icons';
+import { SunIcon, MoonIcon, MenuIcon } from './icons';
 import './Topbar.css';
 
 interface TopbarProps {
   category: Category;
+  onMenuClick: () => void;
 }
 
-const Topbar: React.FC<TopbarProps> = ({ category }) => {
+const Topbar: React.FC<TopbarProps> = ({ category, onMenuClick }) => {
   const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="topbar">
-      <div>
-        <div className="topbar-breadcrumb">Dashboard / {category.shortLabel}</div>
-        <h1 className="topbar-title">{category.label}</h1>
+      <div className="topbar-heading">
+        <button
+          type="button"
+          className="topbar-menu-toggle"
+          onClick={onMenuClick}
+          aria-label="Open menu"
+        >
+          <MenuIcon width={20} height={20} />
+        </button>
+        <div>
+          <div className="topbar-breadcrumb">Dashboard / {category.shortLabel}</div>
+          <h1 className="topbar-title">{category.label}</h1>
+        </div>
       </div>
       <div className="topbar-actions">
         <button

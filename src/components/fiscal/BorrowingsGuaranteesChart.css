@@ -196,6 +196,24 @@
 }
 
 @media (max-width: 700px) {
+  .borrowings-guarantees {
+    padding: 18px 16px;
+  }
+
+  .borrowings-guarantees-title {
+    font-size: 16px;
+  }
+
+  .borrowings-guarantees-desc,
+  .borrowings-guarantees-subdesc {
+    font-size: 13px;
+  }
+
+  .borrowings-guarantees-view-toggle,
+  .borrowings-guarantees-show-toggle {
+    flex-wrap: wrap;
+  }
+
   .borrowings-guarantees-controls {
     gap: 16px;
   }

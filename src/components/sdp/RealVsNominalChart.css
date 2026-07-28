@@ -193,4 +193,16 @@
     min-width: 0;
     width: 100%;
   }
+
+  .real-vs-nominal {
+    padding: 16px;
+  }
+
+  .real-vs-nominal-title {
+    font-size: 15px;
+  }
+
+  .real-vs-nominal-desc {
+    font-size: 13px;
+  }
 }
