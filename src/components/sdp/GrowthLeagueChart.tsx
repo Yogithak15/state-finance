@@ -221,7 +221,7 @@ const GrowthLeagueChart: React.FC = () => {
                 type="category"
                 dataKey="displayLabel"
                 tick={{ fontSize: 12, fill: colors.ink }}
-                axisLine={false}
+                axisLine={{ stroke: colors.grid }}
                 tickLine={false}
                 width={150}
               />

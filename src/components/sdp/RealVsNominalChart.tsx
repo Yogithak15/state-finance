@@ -175,7 +175,7 @@ const RealVsNominalChart: React.FC = () => {
                 />
                 <YAxis
                   tick={{ fontSize: 11, fill: colors.axisText }}
-                  axisLine={false}
+                  axisLine={{ stroke: colors.grid }}
                   tickLine={false}
                   tickFormatter={(v: number) => formatInrShort(v)}
                   width={56}

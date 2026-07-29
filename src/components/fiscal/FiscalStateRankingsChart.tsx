@@ -188,7 +188,7 @@ const FiscalStateRankingsChart: React.FC = () => {
                   type="category"
                   dataKey="dimension_name"
                   tick={{ fontSize: 12.5, fill: colors.ink }}
-                  axisLine={false}
+                  axisLine={{ stroke: colors.grid }}
                   tickLine={false}
                   width={110}
                 />

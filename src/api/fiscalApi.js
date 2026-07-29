@@ -25,9 +25,31 @@ import { fetchSdpStateDimensions, fetchSdpFinancialYearSeries, SDP_METRICS } fro
 //    215  capital_expenditure
 //    216  capital_outlay
 //    217  social_sector_expenditure
-//    218  outstanding_liabilities
+//    218  outstanding_liabilities                                    (Table 176 total)
 //    219  outstanding_guarantees
-//    220  market_borrowings
+//    220  market_borrowings_gross_amount_raised                      (Table 178)
+//    333  market_borrowings_repayments                                (Table 178)
+//
+//  Table 176 — State-wise Composition of Outstanding Liabilities (all
+//  sub-components of metric 218, same Rs crore unit, same dimensions):
+//    334  outstanding_liabilities_sdl                                 (State Development Loans)
+//    335  outstanding_liabilities_power_bonds
+//    336  outstanding_liabilities_compensation_and_other_bonds
+//    337  outstanding_liabilities_nssf                                (National Small Savings Fund)
+//    338  outstanding_liabilities_wma_rbi                             (Ways & Means Advances from RBI)
+//    339  outstanding_liabilities_loans_from_lic
+//    340  outstanding_liabilities_loans_from_gic
+//    341  outstanding_liabilities_loans_from_nabard
+//    342  outstanding_liabilities_loans_from_sbi_and_other_banks
+//    343  outstanding_liabilities_loans_from_ncdc
+//    344  outstanding_liabilities_loans_from_other_institutions
+//    345  outstanding_liabilities_loans_from_banks_and_financial_institutions (sum of 339-344)
+//    346  outstanding_liabilities_total_internal_debt
+//    347  outstanding_liabilities_loans_and_advances_from_centre
+//    348  outstanding_liabilities_provident_fund
+//    349  outstanding_liabilities_reserve_funds
+//    350  outstanding_liabilities_deposit_and_advances
+//    351  outstanding_liabilities_contingency_funds
 //
 //  NOTE: there's no direct "total revenue receipts" metric, but Revenue
 //  Deficit = Revenue Expenditure − Revenue Receipts by definition, so
@@ -57,6 +79,27 @@ export const FISCAL_METRICS = {
   outstandingLiabilities: 218,
   outstandingGuarantees: 219,
   marketBorrowings: 220,
+  marketBorrowingsRepayments: 333,
+
+  // Outstanding liabilities breakdown (Table 176) — sub-components of `outstandingLiabilities`.
+  liabilitiesSdl: 334,
+  liabilitiesPowerBonds: 335,
+  liabilitiesCompensationAndOtherBonds: 336,
+  liabilitiesNssf: 337,
+  liabilitiesWmaRbi: 338,
+  liabilitiesLoansFromLic: 339,
+  liabilitiesLoansFromGic: 340,
+  liabilitiesLoansFromNabard: 341,
+  liabilitiesLoansFromSbiAndOtherBanks: 342,
+  liabilitiesLoansFromNcdc: 343,
+  liabilitiesLoansFromOtherInstitutions: 344,
+  liabilitiesLoansFromBanksAndFinancialInstitutions: 345,
+  liabilitiesTotalInternalDebt: 346,
+  liabilitiesLoansAndAdvancesFromCentre: 347,
+  liabilitiesProvidentFund: 348,
+  liabilitiesReserveFunds: 349,
+  liabilitiesDepositAndAdvances: 350,
+  liabilitiesContingencyFunds: 351,
 };
 
 // A state's fiscal deficit above this share of GSDP breaches the FRBM Act's

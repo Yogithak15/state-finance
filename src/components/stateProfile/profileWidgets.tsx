@@ -217,6 +217,9 @@ interface TrendChartProps {
   height?: number;
   colors: PaletteSubset;
   referenceLines?: ReferenceLineDef[];
+  // Off by default only for callers that already show state/series identity
+  // another way (e.g. colored chips) and would otherwise show it twice.
+  showLegend?: boolean;
 }
 
 export const TrendChart: React.FC<TrendChartProps> = ({
@@ -226,6 +229,7 @@ export const TrendChart: React.FC<TrendChartProps> = ({
   height = 240,
   colors,
   referenceLines,
+  showLegend = true,
 }) => {
   const TooltipContent = makeTooltip(yFormatter);
   return (
@@ -240,13 +244,13 @@ export const TrendChart: React.FC<TrendChartProps> = ({
         />
         <YAxis
           tick={{ fontSize: 11, fill: colors.axisText }}
-          axisLine={false}
+          axisLine={{ stroke: colors.grid }}
           tickLine={false}
           tickFormatter={yFormatter}
           width={60}
         />
         <Tooltip content={(props) => <TooltipContent {...props} />} />
-        <Legend content={(props) => <ProfileLegend {...props} />} />
+        {showLegend && <Legend content={(props) => <ProfileLegend {...props} />} />}
         {(referenceLines ?? []).map((rl) => (
           <ReferenceLine
             key={rl.label}
@@ -311,7 +315,7 @@ export const ComparisonBarChart: React.FC<ComparisonBarChartProps> = ({
         />
         <YAxis
           tick={{ fontSize: 11, fill: colors.axisText }}
-          axisLine={false}
+          axisLine={{ stroke: colors.grid }}
           tickLine={false}
           tickFormatter={yFormatter}
           width={52}

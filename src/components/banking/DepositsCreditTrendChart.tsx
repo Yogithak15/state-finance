@@ -7,14 +7,13 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   TooltipContentProps,
-  DefaultLegendContentProps,
 } from 'recharts';
 import { fetchBankingFinancialYearSeries, BANKING_METRICS } from '../../api/bankingApi';
 import { formatInrShort } from '../../utils/format';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
+import { SearchIcon } from '../icons';
 import './DepositsCreditTrendChart.css';
 
 interface TrendRow {
@@ -43,9 +42,11 @@ const DepositsCreditTrendChart: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [colorMap, setColorMap] = useState<Record<string, string>>({});
   const hasSetDefaultRef = useRef(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -67,14 +68,31 @@ const DepositsCreditTrendChart: React.FC = () => {
     };
   }, [measureId]);
 
+  // Close the add-state dropdown on an outside click.
+  useEffect(() => {
+    if (!pickerOpen) return undefined;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+        setPickerOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [pickerOpen]);
+
   const allStates = useMemo(
     () => Array.from(new Set(rows.map((r) => r.dimension_name))).sort((a, b) => a.localeCompare(b)),
     [rows]
   );
 
-  const filteredStates = useMemo(
-    () => allStates.filter((name) => name.toLowerCase().includes(search.trim().toLowerCase())),
-    [allStates, search]
+  const availableStates = useMemo(
+    () => allStates.filter((name) => !selected.includes(name)),
+    [allStates, selected]
+  );
+
+  const filteredAvailableStates = useMemo(
+    () => availableStates.filter((name) => name.toLowerCase().includes(search.trim().toLowerCase())),
+    [availableStates, search]
   );
 
   const yearRange = useMemo(() => {
@@ -135,6 +153,11 @@ const DepositsCreditTrendChart: React.FC = () => {
     });
   };
 
+  const addState = (name: string) => {
+    toggleState(name);
+    setSearch('');
+  };
+
   const clearAll = () => {
     setSelected([]);
     setColorMap({});
@@ -149,8 +172,7 @@ const DepositsCreditTrendChart: React.FC = () => {
         broken out below.
       </p>
 
-      <div className="deposits-credit-trend-control-group">
-        <span className="deposits-credit-trend-control-label">Measure</span>
+      <div className="deposits-credit-trend-controls">
         <select
           className="deposits-credit-measure-select"
           value={measureId}
@@ -162,73 +184,105 @@ const DepositsCreditTrendChart: React.FC = () => {
             </option>
           ))}
         </select>
+
+        <div className="deposits-credit-state-picker" ref={pickerRef}>
+          <div className="deposits-credit-state-input-wrap">
+            <SearchIcon width={14} height={14} className="deposits-credit-search-icon" />
+            <input
+              type="text"
+              className="deposits-credit-state-input"
+              placeholder="Add a state to compare…"
+              value={search}
+              onFocus={() => setPickerOpen(true)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPickerOpen(true);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && filteredAvailableStates.length > 0) {
+                  e.preventDefault();
+                  addState(filteredAvailableStates[0]);
+                }
+              }}
+            />
+          </div>
+          {pickerOpen && (
+            <div className="deposits-credit-state-dropdown">
+              {filteredAvailableStates.map((name) => (
+                <button
+                  key={name}
+                  type="button"
+                  className="deposits-credit-state-option"
+                  onClick={() => addState(name)}
+                >
+                  {name}
+                </button>
+              ))}
+              {filteredAvailableStates.length === 0 && (
+                <span className="deposits-credit-state-dropdown-empty">
+                  {availableStates.length === 0 ? 'All states added.' : `No states match “${search}”.`}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="deposits-credit-trend-control-group">
-        <div className="deposits-credit-trend-control-header">
-          <span className="deposits-credit-trend-control-label">Search States</span>
-          {selected.length > 0 && (
-            <button type="button" className="deposits-credit-clear-all-link" onClick={clearAll}>
-              clear all
-            </button>
-          )}
-        </div>
-        <input
-          type="text"
-          className="deposits-credit-state-search-input"
-          placeholder="Type to filter…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <div className="deposits-credit-state-pill-grid">
-          {filteredStates.map((name) => {
-            const isSelected = selected.includes(name);
-            return (
+      {selected.length > 0 && (
+        <div className="deposits-credit-chips-row">
+          {selected.map((name) => (
+            <span key={name} className="deposits-credit-chip" style={{ background: colorMap[name] }}>
+              {name}
               <button
-                key={name}
                 type="button"
-                className={`deposits-credit-state-pill${isSelected ? ' selected' : ''}`}
-                style={isSelected ? { background: colorMap[name], borderColor: colorMap[name] } : undefined}
+                className="deposits-credit-chip-remove"
                 onClick={() => toggleState(name)}
+                aria-label={`Remove ${name}`}
               >
-                {name}
+                ×
               </button>
-            );
-          })}
-          {!loading && filteredStates.length === 0 && (
-            <span className="deposits-credit-state-pill-empty">No states match “{search}”.</span>
-          )}
+            </span>
+          ))}
+          <button type="button" className="deposits-credit-clear-all-link" onClick={clearAll}>
+            clear all
+          </button>
         </div>
-      </div>
+      )}
 
       {error && <div className="deposits-credit-trend-error">{error}</div>}
 
       {!error && selected.length === 0 && (
         <div className="deposits-credit-trend-empty">
-          {loading ? 'Loading states…' : 'Select one or more states above to see their trend.'}
+          {loading ? 'Loading states…' : 'Add a state above to see its trend.'}
         </div>
       )}
 
       {!error && selected.length > 0 && (
         <div className="deposits-credit-trend-chart">
-          <ResponsiveContainer width="100%" height={380}>
-            <LineChart data={chartData} margin={{ top: 8, right: 24, left: 8, bottom: 8 }}>
+          <ResponsiveContainer width="100%" height={360}>
+            <LineChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
               <CartesianGrid stroke={colors.grid} />
               <XAxis
                 dataKey="period"
-                tick={{ fontSize: 12, fill: colors.axisText }}
+                tick={{ fontSize: 11, fill: colors.axisText }}
                 axisLine={{ stroke: colors.grid }}
                 tickLine={false}
+                interval="preserveStartEnd"
+                minTickGap={16}
               />
               <YAxis
-                tick={{ fontSize: 12, fill: colors.axisText }}
-                axisLine={false}
+                tick={(props: { y?: number | string; payload?: { value: number } }) => (
+                  <LeftAlignedYAxisTick {...props} fill={colors.axisText} />
+                )}
+                axisLine={{ stroke: colors.grid }}
                 tickLine={false}
                 tickFormatter={(v: number) => formatInrShort(v)}
-                width={92}
+                width={44}
               />
-              <Tooltip content={(props) => <DepositsCreditTooltip {...props} />} />
-              <Legend content={(props) => <DepositsCreditLegend {...props} />} />
+              <Tooltip
+                content={(props) => <DepositsCreditTooltip {...props} />}
+                cursor={{ stroke: colors.axisText, strokeDasharray: '3 3' }}
+              />
               {selected.map((name) => (
                 <Line
                   key={name}
@@ -249,6 +303,18 @@ const DepositsCreditTrendChart: React.FC = () => {
   );
 };
 
+// Left-aligned so every value starts flush at the card's left edge instead of
+// recharts' default right-aligned ticks, which ragged-left differently-lengthed values.
+const LeftAlignedYAxisTick: React.FC<{ y?: number | string; payload?: { value: number }; fill: string }> = ({
+  y,
+  payload,
+  fill,
+}) => (
+  <text x={4} y={y} dy={4} fontSize={11} fill={fill} textAnchor="start">
+    {formatInrShort(payload?.value ?? 0)}
+  </text>
+);
+
 // Value leads (bold), state name follows, keyed by a short line — not a colored box.
 const DepositsCreditTooltip: React.FC<TooltipContentProps> = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) return null;
@@ -262,21 +328,6 @@ const DepositsCreditTooltip: React.FC<TooltipContentProps> = ({ active, payload,
           <span className="deposits-credit-trend-tooltip-value">{formatInrShort(Number(entry.value))}</span>
           <span className="deposits-credit-trend-tooltip-name">{String(entry.dataKey)}</span>
         </div>
-      ))}
-    </div>
-  );
-};
-
-// Dot + state name in text ink — identity never carried by colored text alone.
-const DepositsCreditLegend: React.FC<DefaultLegendContentProps> = ({ payload }) => {
-  if (!payload) return null;
-  return (
-    <div className="deposits-credit-trend-legend">
-      {payload.map((entry) => (
-        <span className="deposits-credit-trend-legend-item" key={String(entry.dataKey)}>
-          <span className="deposits-credit-trend-legend-dot" style={{ background: entry.color }} />
-          {entry.value}
-        </span>
       ))}
     </div>
   );

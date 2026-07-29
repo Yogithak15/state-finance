@@ -14,47 +14,158 @@
 }
 
 .compare-states-desc {
-  margin: 0 0 20px;
+  margin: 0 0 18px;
   font-size: 13.5px;
   line-height: 1.5;
   color: var(--color-text-muted);
+  max-width: 720px;
 }
 
-.compare-states-control-group {
-  margin-bottom: 18px;
-}
-
-.compare-states-control-header {
+/* Control row — compact metric select + add-state search, side by side */
+.compare-states-controls {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
-.compare-states-control-label {
-  display: block;
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  margin-bottom: 8px;
-}
-
-/* Metric select */
 .compare-states-metric-select {
-  width: 100%;
-  max-width: 480px;
-  padding: 9px 12px;
+  flex-shrink: 0;
+  padding: 6px 10px;
   border-radius: 8px;
   border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  font-size: 13.5px;
+  background: var(--color-bg);
+  font-size: 12.5px;
+  font-weight: 600;
   color: var(--color-text);
+  max-width: 220px;
 }
 
 .compare-states-metric-select:focus {
   outline: none;
   border-color: var(--color-accent);
+}
+
+/* Add-state search + dropdown */
+.compare-states-picker {
+  position: relative;
+  flex: 1 1 240px;
+  min-width: 200px;
+}
+
+.compare-states-picker-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.compare-states-picker-input-wrap:focus-within {
+  border-color: var(--color-accent);
+}
+
+.compare-states-search-icon {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.compare-states-picker-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 13px;
+  color: var(--color-text);
+}
+
+.compare-states-picker-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.compare-states-picker-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 10px;
+  padding: 6px;
+  z-index: 20;
+}
+
+.compare-states-picker-option {
+  display: block;
+  width: 100%;
+  appearance: none;
+  border: none;
+  background: none;
+  text-align: left;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.compare-states-picker-option:hover {
+  background: var(--color-bg);
+}
+
+.compare-states-picker-empty {
+  display: block;
+  padding: 8px 10px;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+/* Selected-state chips, colored to match their chart line */
+.compare-states-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.compare-states-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px 5px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.compare-states-chip-remove {
+  appearance: none;
+  border: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.compare-states-chip-remove:hover {
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .compare-states-clear-all-link {
@@ -70,57 +181,6 @@
 
 .compare-states-clear-all-link:hover {
   text-decoration: underline;
-}
-
-/* State search + pills */
-.compare-states-state-search-input {
-  width: 100%;
-  max-width: 420px;
-  padding: 9px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  font-size: 13.5px;
-  color: var(--color-text);
-  margin-bottom: 12px;
-}
-
-.compare-states-state-search-input:focus {
-  outline: none;
-  border-color: var(--color-accent);
-}
-
-.compare-states-state-pill-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.compare-states-state-pill {
-  appearance: none;
-  border-radius: 999px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  padding: 6px 13px;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--color-text);
-  cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
-}
-
-.compare-states-state-pill:hover {
-  border-color: var(--color-accent);
-}
-
-.compare-states-state-pill.selected {
-  color: #ffffff;
-  font-weight: 600;
-}
-
-.compare-states-state-pill-empty {
-  font-size: 12.5px;
-  color: var(--color-text-muted);
 }
 
 /* Chart states */
@@ -146,72 +206,25 @@
   margin-top: 4px;
 }
 
-/* Head-to-head stat tiles */
-.compare-states-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin-top: 20px;
-}
-
-.compare-states-stat-tile {
-  flex: 1 1 180px;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 14px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.compare-states-stat-tile-diff {
-  border-style: dashed;
-}
-
-.compare-states-stat-tile-head {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-}
-
-.compare-states-stat-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.compare-states-stat-label {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.compare-states-stat-value {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--color-text);
-}
-
-.compare-states-stat-hint {
-  font-size: 12px;
-  color: var(--color-text-muted);
-}
-
 @media (max-width: 700px) {
-  .compare-states-state-search-input,
-  .compare-states-metric-select {
-    max-width: 100%;
-  }
-
   .compare-states {
-    padding: 16px 16px;
+    padding: 16px;
   }
 
-  .compare-states-stat-tile {
-    flex: 1 1 140px;
+  .compare-states-title {
+    font-size: 15px;
+  }
+
+  .compare-states-desc {
+    font-size: 13px;
+  }
+
+  .compare-states-metric-select {
+    max-width: none;
+    width: 100%;
+  }
+
+  .compare-states-picker {
+    flex-basis: 100%;
   }
 }

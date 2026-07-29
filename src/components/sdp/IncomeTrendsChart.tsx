@@ -7,14 +7,13 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   TooltipContentProps,
-  DefaultLegendContentProps,
 } from 'recharts';
 import { fetchSdpFinancialYearSeries, SDP_METRICS } from '../../api/stateDomesticProductApi';
 import { formatInrShort } from '../../utils/format';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
+import { SearchIcon } from '../icons';
 import './IncomeTrendsChart.css';
 
 interface TrendRow {
@@ -35,9 +34,11 @@ const IncomeTrendsChart: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [colorMap, setColorMap] = useState<Record<string, string>>({});
   const hasSetDefaultRef = useRef(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -60,14 +61,31 @@ const IncomeTrendsChart: React.FC = () => {
     };
   }, [priceBasis]);
 
+  // Close the add-state dropdown on an outside click.
+  useEffect(() => {
+    if (!pickerOpen) return undefined;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+        setPickerOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [pickerOpen]);
+
   const allStates = useMemo(
     () => Array.from(new Set(rows.map((r) => r.dimension_name))).sort((a, b) => a.localeCompare(b)),
     [rows]
   );
 
-  const filteredStates = useMemo(
-    () => allStates.filter((name) => name.toLowerCase().includes(search.trim().toLowerCase())),
-    [allStates, search]
+  const availableStates = useMemo(
+    () => allStates.filter((name) => !selected.includes(name)),
+    [allStates, selected]
+  );
+
+  const filteredAvailableStates = useMemo(
+    () => availableStates.filter((name) => name.toLowerCase().includes(search.trim().toLowerCase())),
+    [availableStates, search]
   );
 
   // Pre-select a small, data-driven starting set (richest / median / least at
@@ -127,6 +145,11 @@ const IncomeTrendsChart: React.FC = () => {
     });
   };
 
+  const addState = (name: string) => {
+    toggleState(name);
+    setSearch('');
+  };
+
   const clearAll = () => {
     setSelected([]);
     setColorMap({});
@@ -136,77 +159,101 @@ const IncomeTrendsChart: React.FC = () => {
     <div className="income-trends">
       <h3 className="income-trends-title">1 · Income Trends over Time</h3>
       <p className="income-trends-desc">
-        Per-capita net state domestic product across years, by state. Pick states to compare, and switch
+        Per-capita net state domestic product across years, by state. Add states to compare, and switch
         between current (nominal) and constant (inflation-adjusted) prices.
       </p>
 
-      <div className="income-trends-control-group">
-        <span className="income-trends-control-label">Price Basis</span>
-        <div className="price-basis-toggle" role="radiogroup">
+      <div className="income-trends-controls">
+        <div className="income-trends-price-toggle" role="radiogroup" aria-label="Price basis">
           {(['current', 'constant'] as PriceBasis[]).map((basis) => (
             <button
               key={basis}
               type="button"
               role="radio"
               aria-checked={priceBasis === basis}
-              className={`price-basis-option${priceBasis === basis ? ' active' : ''}`}
+              className={`income-trends-price-option${priceBasis === basis ? ' active' : ''}`}
               onClick={() => setPriceBasis(basis)}
             >
-              <span className="price-basis-dot" />
               {basis === 'current' ? 'Current' : 'Constant'}
             </button>
           ))}
         </div>
+
+        <div className="income-trends-state-picker" ref={pickerRef}>
+          <div className="income-trends-state-input-wrap">
+            <SearchIcon width={14} height={14} className="income-trends-search-icon" />
+            <input
+              type="text"
+              className="income-trends-state-input"
+              placeholder="Add a state to compare…"
+              value={search}
+              onFocus={() => setPickerOpen(true)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPickerOpen(true);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && filteredAvailableStates.length > 0) {
+                  e.preventDefault();
+                  addState(filteredAvailableStates[0]);
+                }
+              }}
+            />
+          </div>
+          {pickerOpen && (
+            <div className="income-trends-state-dropdown">
+              {filteredAvailableStates.map((name) => (
+                <button
+                  key={name}
+                  type="button"
+                  className="income-trends-state-option"
+                  onClick={() => addState(name)}
+                >
+                  {name}
+                </button>
+              ))}
+              {filteredAvailableStates.length === 0 && (
+                <span className="income-trends-state-dropdown-empty">
+                  {availableStates.length === 0 ? 'All states added.' : `No states match “${search}”.`}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="income-trends-control-group">
-        <div className="income-trends-control-header">
-          <span className="income-trends-control-label">Search States</span>
-          {selected.length > 0 && (
-            <button type="button" className="clear-all-link" onClick={clearAll}>
-              clear all
-            </button>
-          )}
-        </div>
-        <input
-          type="text"
-          className="state-search-input"
-          placeholder="Type to filter…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <div className="state-pill-grid">
-          {filteredStates.map((name) => {
-            const isSelected = selected.includes(name);
-            return (
+      {selected.length > 0 && (
+        <div className="income-trends-chips-row">
+          {selected.map((name) => (
+            <span key={name} className="income-trends-chip" style={{ background: colorMap[name] }}>
+              {name}
               <button
-                key={name}
                 type="button"
-                className={`state-pill${isSelected ? ' selected' : ''}`}
-                style={isSelected ? { background: colorMap[name], borderColor: colorMap[name] } : undefined}
+                className="income-trends-chip-remove"
                 onClick={() => toggleState(name)}
+                aria-label={`Remove ${name}`}
               >
-                {name}
+                ×
               </button>
-            );
-          })}
-          {!loading && filteredStates.length === 0 && (
-            <span className="state-pill-empty">No states match “{search}”.</span>
-          )}
+            </span>
+          ))}
+          <button type="button" className="income-trends-clear-all" onClick={clearAll}>
+            clear all
+          </button>
         </div>
-      </div>
+      )}
 
       {error && <div className="income-trends-error">{error}</div>}
 
       {!error && selected.length === 0 && (
         <div className="income-trends-empty">
-          {loading ? 'Loading states…' : 'Select one or more states above to see their income trend.'}
+          {loading ? 'Loading states…' : 'Add a state above to see its income trend.'}
         </div>
       )}
 
       {!error && selected.length > 0 && (
         <div className="income-trends-chart">
-          <ResponsiveContainer width="100%" height={380}>
+          <ResponsiveContainer width="100%" height={360}>
             <LineChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
               <CartesianGrid stroke={colors.grid} />
               <XAxis
@@ -221,13 +268,15 @@ const IncomeTrendsChart: React.FC = () => {
                 tick={(props: { y?: number | string; payload?: { value: number } }) => (
                   <LeftAlignedYAxisTick {...props} fill={colors.axisText} />
                 )}
-                axisLine={false}
+                axisLine={{ stroke: colors.grid }}
                 tickLine={false}
                 tickFormatter={(v: number) => formatInrShort(v)}
                 width={44}
               />
-              <Tooltip content={(props) => <IncomeTrendsTooltip {...props} />} />
-              <Legend content={(props) => <IncomeTrendsLegend {...props} />} />
+              <Tooltip
+                content={(props) => <IncomeTrendsTooltip {...props} />}
+                cursor={{ stroke: colors.axisText, strokeDasharray: '3 3' }}
+              />
               {selected.map((name) => (
                 <Line
                   key={name}
@@ -248,9 +297,8 @@ const IncomeTrendsChart: React.FC = () => {
   );
 };
 
-// Left-aligned so every value starts flush at the card's left edge — same as
-// the state pill labels above the chart — instead of recharts' default
-// right-aligned ticks, which ragged-left differently-lengthed values.
+// Left-aligned so every value starts flush at the card's left edge instead of
+// recharts' default right-aligned ticks, which ragged-left differently-lengthed values.
 const LeftAlignedYAxisTick: React.FC<{ y?: number | string; payload?: { value: number }; fill: string }> = ({
   y,
   payload,
@@ -274,21 +322,6 @@ const IncomeTrendsTooltip: React.FC<TooltipContentProps> = ({ active, payload, l
           <span className="income-trends-tooltip-value">{formatInrShort(Number(entry.value))}</span>
           <span className="income-trends-tooltip-name">{String(entry.dataKey)}</span>
         </div>
-      ))}
-    </div>
-  );
-};
-
-// Dot + state name in text ink — identity never carried by colored text alone.
-const IncomeTrendsLegend: React.FC<DefaultLegendContentProps> = ({ payload }) => {
-  if (!payload) return null;
-  return (
-    <div className="income-trends-legend">
-      {payload.map((entry) => (
-        <span className="income-trends-legend-item" key={String(entry.dataKey)}>
-          <span className="income-trends-legend-dot" style={{ background: entry.color }} />
-          {entry.value}
-        </span>
       ))}
     </div>
   );

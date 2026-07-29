@@ -31,16 +31,37 @@ interface MetricRow {
 type ViewMode = 'composition' | 'debt-gsdp';
 type ShowMode = 'top15' | 'all';
 
-const MARKET_KEY = 'Market Borrowings (SDLs)';
-const OTHER_KEY = 'Other Liabilities';
+// Six grouped categories built from Table 176's 17 leaf sub-components of
+// outstanding liabilities — granular enough to be informative, coarse enough
+// to stay readable as a stacked bar. "Other" is a residual (WMA from RBI,
+// deposits & advances, contingency funds, and any unreported difference).
+const CATEGORY_KEYS = [
+  'Market Borrowings (SDL)',
+  'Special Securities',
+  'Loans from Centre',
+  'Loans from Banks & FIs',
+  'Small Savings & Funds',
+  'Other',
+] as const;
+type CategoryKey = (typeof CATEGORY_KEYS)[number];
 
-interface CompositionRow {
+const SUB_METRICS = {
+  sdl: FISCAL_METRICS.liabilitiesSdl,
+  powerBonds: FISCAL_METRICS.liabilitiesPowerBonds,
+  compBonds: FISCAL_METRICS.liabilitiesCompensationAndOtherBonds,
+  centreLoans: FISCAL_METRICS.liabilitiesLoansAndAdvancesFromCentre,
+  bankLoans: FISCAL_METRICS.liabilitiesLoansFromBanksAndFinancialInstitutions,
+  nssf: FISCAL_METRICS.liabilitiesNssf,
+  providentFund: FISCAL_METRICS.liabilitiesProvidentFund,
+  reserveFunds: FISCAL_METRICS.liabilitiesReserveFunds,
+} as const;
+type SubMetricKey = keyof typeof SUB_METRICS;
+
+type CompositionRow = Record<CategoryKey, number> & {
   dimensionId: number;
   state: string;
   total: number;
-  [MARKET_KEY]: number;
-  [OTHER_KEY]: number;
-}
+};
 
 // N.K. Singh FRBM Review Committee (2017) recommended a general-government
 // debt path with states carrying roughly this share of GSDP by 2024-25 — a
@@ -53,13 +74,21 @@ const DebtLiabilitiesChart: React.FC = () => {
   const { theme } = useTheme();
   const colors = CHART_COLORS[theme];
   const PALETTE = colors.categorical;
+  const categoryColors: Record<CategoryKey, string> = {
+    'Market Borrowings (SDL)': colors.categorical[0],
+    'Special Securities': colors.categorical[1],
+    'Loans from Centre': colors.categorical[2],
+    'Loans from Banks & FIs': colors.categorical[3],
+    'Small Savings & Funds': colors.categorical[4],
+    Other: colors.muted,
+  };
   const [view, setView] = useState<ViewMode>('composition');
 
   // ── Composition view state ────────────────────────────────────────────
   const [year, setYear] = useState<string>('');
   const [show, setShow] = useState<ShowMode>('top15');
   const [liabilitiesRows, setLiabilitiesRows] = useState<MetricRow[]>([]);
-  const [marketRows, setMarketRows] = useState<MetricRow[]>([]);
+  const [subRows, setSubRows] = useState<Record<SubMetricKey, MetricRow[]>>({} as Record<SubMetricKey, MetricRow[]>);
   const [compLoading, setCompLoading] = useState(true);
   const [compError, setCompError] = useState<string | null>(null);
 
@@ -67,14 +96,19 @@ const DebtLiabilitiesChart: React.FC = () => {
     let cancelled = false;
     setCompLoading(true);
     setCompError(null);
+    const subKeys = Object.keys(SUB_METRICS) as SubMetricKey[];
     Promise.all([
       fetchFiscalFinancialYearSeries(FISCAL_METRICS.outstandingLiabilities),
-      fetchFiscalFinancialYearSeries(FISCAL_METRICS.marketBorrowings),
+      ...subKeys.map((k) => fetchFiscalFinancialYearSeries(SUB_METRICS[k])),
     ])
-      .then(([liabilities, market]: [MetricRow[], MetricRow[]]) => {
+      .then(([liabilities, ...subs]: MetricRow[][]) => {
         if (cancelled) return;
         setLiabilitiesRows(liabilities);
-        setMarketRows(market);
+        const nextSubRows = {} as Record<SubMetricKey, MetricRow[]>;
+        subKeys.forEach((k, i) => {
+          nextSubRows[k] = subs[i];
+        });
+        setSubRows(nextSubRows);
         const years = Array.from(new Set(liabilities.map((r) => r.period))).sort();
         setYear((prev) => (prev && years.includes(prev) ? prev : years[years.length - 1] ?? ''));
         setCompLoading(false);
@@ -95,24 +129,51 @@ const DebtLiabilitiesChart: React.FC = () => {
   );
 
   const compositionRows = useMemo(() => {
-    const marketByState = new Map<number, number>();
-    marketRows.filter((r) => r.period === year).forEach((r) => marketByState.set(r.dimension_id, r.value));
+    const byStateFor = (key: SubMetricKey) => {
+      const map = new Map<number, number>();
+      (subRows[key] ?? [])
+        .filter((r) => r.period === year)
+        .forEach((r) => map.set(r.dimension_id, r.value));
+      return map;
+    };
+
+    const sdlByState = byStateFor('sdl');
+    const powerBondsByState = byStateFor('powerBonds');
+    const compBondsByState = byStateFor('compBonds');
+    const centreLoansByState = byStateFor('centreLoans');
+    const bankLoansByState = byStateFor('bankLoans');
+    const nssfByState = byStateFor('nssf');
+    const providentFundByState = byStateFor('providentFund');
+    const reserveFundsByState = byStateFor('reserveFunds');
 
     const rows: CompositionRow[] = liabilitiesRows
       .filter((r) => r.period === year)
       .map((r) => {
-        const market = Math.min(marketByState.get(r.dimension_id) ?? 0, r.value);
+        const id = r.dimension_id;
+        const marketBorrowings = sdlByState.get(id) ?? 0;
+        const specialSecurities = (powerBondsByState.get(id) ?? 0) + (compBondsByState.get(id) ?? 0);
+        const loansFromCentre = centreLoansByState.get(id) ?? 0;
+        const loansFromBanks = bankLoansByState.get(id) ?? 0;
+        const smallSavingsAndFunds =
+          (nssfByState.get(id) ?? 0) + (providentFundByState.get(id) ?? 0) + (reserveFundsByState.get(id) ?? 0);
+        const known = marketBorrowings + specialSecurities + loansFromCentre + loansFromBanks + smallSavingsAndFunds;
+        const other = Math.max(r.value - known, 0);
+
         return {
-          dimensionId: r.dimension_id,
+          dimensionId: id,
           state: r.dimension_name,
           total: r.value,
-          [MARKET_KEY]: market,
-          [OTHER_KEY]: r.value - market,
+          'Market Borrowings (SDL)': marketBorrowings,
+          'Special Securities': specialSecurities,
+          'Loans from Centre': loansFromCentre,
+          'Loans from Banks & FIs': loansFromBanks,
+          'Small Savings & Funds': smallSavingsAndFunds,
+          Other: other,
         };
       });
 
     return rows.sort((a, b) => b.total - a.total);
-  }, [liabilitiesRows, marketRows, year]);
+  }, [liabilitiesRows, subRows, year]);
 
   const displayRows = useMemo(
     () => (show === 'top15' ? compositionRows.slice(0, 15) : compositionRows),
@@ -259,9 +320,9 @@ const DebtLiabilitiesChart: React.FC = () => {
       {view === 'composition' && (
         <>
           <p className="debt-liabilities-subdesc">
-            Total outstanding liabilities by state, split into market borrowings (State Development Loans raised
-            from the bond market) and everything else — loans from the Centre, provident fund, reserve funds and
-            other internal debt.
+            Total outstanding liabilities by state, split into market borrowings (SDLs), special securities
+            (power &amp; other compensation bonds), loans from the Centre, loans from banks &amp; financial
+            institutions, small-savings &amp; fund liabilities, and other residual liabilities.
           </p>
 
           <div className="debt-liabilities-controls">
@@ -333,31 +394,28 @@ const DebtLiabilitiesChart: React.FC = () => {
                       type="category"
                       dataKey="state"
                       tick={{ fontSize: 12.5, fill: colors.ink }}
-                      axisLine={false}
+                      axisLine={{ stroke: colors.grid }}
                       tickLine={false}
                       width={110}
                     />
                     <Tooltip content={(props) => <CompositionTooltip {...props} />} />
                     <Legend content={(props) => <CompositionLegend {...props} />} />
-                    <Bar
-                      dataKey={MARKET_KEY}
-                      stackId="debt"
-                      fill={colors.categorical[5]}
-                      activeBar={{ stroke: 'transparent' }}
-                    />
-                    <Bar
-                      dataKey={OTHER_KEY}
-                      stackId="debt"
-                      fill={colors.muted}
-                      activeBar={{ stroke: 'transparent' }}
-                    />
+                    {CATEGORY_KEYS.map((key) => (
+                      <Bar
+                        key={key}
+                        dataKey={key}
+                        stackId="debt"
+                        fill={categoryColors[key]}
+                        activeBar={{ stroke: 'transparent' }}
+                      />
+                    ))}
                   </BarChart>
                 </ResponsiveContainer>
               </div>
               <div className="debt-liabilities-footnote">
                 {year} · sorted by total outstanding liabilities, largest first. {displayRows.length} of{' '}
-                {compositionRows.length} states/UTs with data shown. Market borrowings data is available from
-                2017-18 onward; years before that show the full total as "Other Liabilities".
+                {compositionRows.length} states/UTs with data shown. "Other" captures Ways &amp; Means Advances
+                from RBI, deposits &amp; advances, and contingency fund liabilities not broken out above.
               </div>
             </>
           )}
@@ -430,7 +488,7 @@ const DebtLiabilitiesChart: React.FC = () => {
                     />
                     <YAxis
                       tick={{ fontSize: 12, fill: colors.axisText }}
-                      axisLine={false}
+                      axisLine={{ stroke: colors.grid }}
                       tickLine={false}
                       tickFormatter={(v: number) => pct(v)}
                       width={48}
@@ -480,7 +538,7 @@ const CompositionTooltip: React.FC<TooltipContentProps> = ({ active, payload }) 
   if (!active || !payload || !payload.length) return null;
   const row = payload[0]?.payload as CompositionRow | undefined;
   if (!row) return null;
-  const segments = [MARKET_KEY, OTHER_KEY] as const;
+  const segments = CATEGORY_KEYS;
   return (
     <div className="debt-liabilities-tooltip">
       <div className="debt-liabilities-tooltip-period">{row.state}</div>

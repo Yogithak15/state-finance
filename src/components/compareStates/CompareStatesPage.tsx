@@ -4,6 +4,7 @@ import { formatInrShort } from '../../utils/format';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
 import { MetricRow, TrendChart, buildTrendDataByState } from '../stateProfile/profileWidgets';
+import { SearchIcon } from '../icons';
 import './CompareStatesPage.css';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -49,13 +50,11 @@ const CompareStatesPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [colorMap, setColorMap] = useState<Record<string, string>>({});
-  // Tracks whether the user has manually edited the state selection since the
-  // last metric change — reset to false every time the metric changes, so
-  // switching metrics always re-picks a sensible default pair unless the
-  // user immediately touches the selector again for the new metric.
   const userTouchedRef = useRef(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
 
   const metric = COMPARE_METRIC_MAP[metricKey] as CompareMetric;
 
@@ -81,14 +80,31 @@ const CompareStatesPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metricKey]);
 
+  // Close the add-state dropdown on an outside click.
+  useEffect(() => {
+    if (!pickerOpen) return undefined;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+        setPickerOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [pickerOpen]);
+
   const allStates = useMemo(
     () => Array.from(new Set(rows.map((r) => r.dimension_name))).sort((a, b) => a.localeCompare(b)),
     [rows]
   );
 
-  const filteredStates = useMemo(
-    () => allStates.filter((name) => name.toLowerCase().includes(search.trim().toLowerCase())),
-    [allStates, search]
+  const availableStates = useMemo(
+    () => allStates.filter((name) => !selected.includes(name)),
+    [allStates, selected]
+  );
+
+  const filteredAvailableStates = useMemo(
+    () => availableStates.filter((name) => name.toLowerCase().includes(search.trim().toLowerCase())),
+    [availableStates, search]
   );
 
   // Default selection: the highest- and lowest-ranked state at the latest
@@ -138,6 +154,11 @@ const CompareStatesPage: React.FC = () => {
     });
   };
 
+  const addState = (name: string) => {
+    toggleState(name);
+    setSearch('');
+  };
+
   const clearAll = () => {
     userTouchedRef.current = true;
     setSelected([]);
@@ -146,30 +167,6 @@ const CompareStatesPage: React.FC = () => {
 
   const formatValue = (v: number) => formatByUnit(metric.unit, v);
 
-  // Head-to-head: each selected state's latest available value.
-  const latestByState = useMemo(
-    () =>
-      selected.map((name) => {
-        const stateRows = rows
-          .filter((r) => r.dimension_name === name)
-          .slice()
-          .sort((a, b) => a.period.localeCompare(b.period));
-        const last = stateRows[stateRows.length - 1];
-        return { name, period: last?.period ?? null, value: last?.value ?? null };
-      }),
-    [rows, selected]
-  );
-
-  // Only meaningful for exactly 2 states — 3+ makes "which pair?" ambiguous.
-  const diffTile = useMemo(() => {
-    if (latestByState.length !== 2) return null;
-    const [a, b] = latestByState;
-    if (a.value == null || b.value == null) return null;
-    const hi = Math.max(a.value, b.value);
-    const lo = Math.min(a.value, b.value);
-    return { diff: hi - lo, ratio: lo !== 0 ? hi / lo : null };
-  }, [latestByState]);
-
   return (
     <div className="compare-states">
       <h3 className="compare-states-title">Compare States</h3>
@@ -177,8 +174,7 @@ const CompareStatesPage: React.FC = () => {
         Compare any two or more states on any tracked metric, across all six RBI datasets.
       </p>
 
-      <div className="compare-states-control-group">
-        <span className="compare-states-control-label">Metric</span>
+      <div className="compare-states-controls">
         <select
           className="compare-states-metric-select"
           value={metricKey}
@@ -194,87 +190,90 @@ const CompareStatesPage: React.FC = () => {
             </optgroup>
           ))}
         </select>
+
+        <div className="compare-states-picker" ref={pickerRef}>
+          <div className="compare-states-picker-input-wrap">
+            <SearchIcon width={14} height={14} className="compare-states-search-icon" />
+            <input
+              type="text"
+              className="compare-states-picker-input"
+              placeholder="Add a state to compare…"
+              value={search}
+              onFocus={() => setPickerOpen(true)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPickerOpen(true);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && filteredAvailableStates.length > 0) {
+                  e.preventDefault();
+                  addState(filteredAvailableStates[0]);
+                }
+              }}
+            />
+          </div>
+          {pickerOpen && (
+            <div className="compare-states-picker-dropdown">
+              {filteredAvailableStates.map((name) => (
+                <button
+                  key={name}
+                  type="button"
+                  className="compare-states-picker-option"
+                  onClick={() => addState(name)}
+                >
+                  {name}
+                </button>
+              ))}
+              {filteredAvailableStates.length === 0 && (
+                <span className="compare-states-picker-empty">
+                  {availableStates.length === 0 ? 'All states added.' : `No states match “${search}”.`}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="compare-states-control-group">
-        <div className="compare-states-control-header">
-          <span className="compare-states-control-label">Search States</span>
-          {selected.length > 0 && (
-            <button type="button" className="compare-states-clear-all-link" onClick={clearAll}>
-              clear all
-            </button>
-          )}
-        </div>
-        <input
-          type="text"
-          className="compare-states-state-search-input"
-          placeholder="Type to filter…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <div className="compare-states-state-pill-grid">
-          {filteredStates.map((name) => {
-            const isSelected = selected.includes(name);
-            return (
+      {selected.length > 0 && (
+        <div className="compare-states-chips-row">
+          {selected.map((name) => (
+            <span key={name} className="compare-states-chip" style={{ background: colorMap[name] }}>
+              {name}
               <button
-                key={name}
                 type="button"
-                className={`compare-states-state-pill${isSelected ? ' selected' : ''}`}
-                style={isSelected ? { background: colorMap[name], borderColor: colorMap[name] } : undefined}
+                className="compare-states-chip-remove"
                 onClick={() => toggleState(name)}
+                aria-label={`Remove ${name}`}
               >
-                {name}
+                ×
               </button>
-            );
-          })}
-          {!loading && filteredStates.length === 0 && (
-            <span className="compare-states-state-pill-empty">No states match “{search}”.</span>
-          )}
+            </span>
+          ))}
+          <button type="button" className="compare-states-clear-all-link" onClick={clearAll}>
+            clear all
+          </button>
         </div>
-      </div>
+      )}
 
       {error && <div className="compare-states-error">{error}</div>}
 
       {!error && selected.length === 0 && (
         <div className="compare-states-empty">
-          {loading ? 'Loading states…' : 'Select two or more states above to compare their trend.'}
+          {loading ? 'Loading states…' : 'Add two or more states above to compare their trend.'}
         </div>
       )}
 
       {!error && selected.length > 0 && (
-        <>
-          <div className="compare-states-chart">
-            <TrendChart
-              data={chartData}
-              series={selected.map((name) => ({ key: name, label: name, color: colorMap[name] ?? colors.ink }))}
-              yFormatter={formatValue}
-              height={380}
-              colors={colors}
-            />
-          </div>
-
-          <div className="compare-states-stats">
-            {latestByState.map((s) => (
-              <div className="compare-states-stat-tile" key={s.name}>
-                <span className="compare-states-stat-tile-head">
-                  <span className="compare-states-stat-dot" style={{ background: colorMap[s.name] }} />
-                  <span className="compare-states-stat-label">{s.name}</span>
-                </span>
-                <span className="compare-states-stat-value">{s.value != null ? formatValue(s.value) : '—'}</span>
-                <span className="compare-states-stat-hint">{s.period ? `FY ${s.period}` : 'No data'}</span>
-              </div>
-            ))}
-            {diffTile && (
-              <div className="compare-states-stat-tile compare-states-stat-tile-diff">
-                <span className="compare-states-stat-label">Difference</span>
-                <span className="compare-states-stat-value">{formatValue(diffTile.diff)}</span>
-                <span className="compare-states-stat-hint">
-                  {diffTile.ratio != null ? `${diffTile.ratio.toFixed(1)}× ratio` : 'Ratio unavailable'}
-                </span>
-              </div>
-            )}
-          </div>
-        </>
+        <div className="compare-states-chart">
+          <TrendChart
+            data={chartData}
+            series={selected.map((name) => ({ key: name, label: name, color: colorMap[name] ?? colors.ink }))}
+            yFormatter={formatValue}
+            height={360}
+            colors={colors}
+            showLegend={false}
+          />
+        </div>
       )}
     </div>
   );

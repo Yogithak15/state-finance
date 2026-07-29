@@ -217,7 +217,7 @@ const BorrowingsGuaranteesChart: React.FC = () => {
                       type="category"
                       dataKey="dimension_name"
                       tick={{ fontSize: 12.5, fill: colors.ink }}
-                      axisLine={false}
+                      axisLine={{ stroke: colors.grid }}
                       tickLine={false}
                       width={110}
                     />
@@ -293,7 +293,7 @@ const BorrowingsGuaranteesChart: React.FC = () => {
                   />
                   <YAxis
                     tick={{ fontSize: 12, fill: colors.axisText }}
-                    axisLine={false}
+                    axisLine={{ stroke: colors.grid }}
                     tickLine={false}
                     tickFormatter={(v: number) => formatInrShort(v)}
                     width={72}

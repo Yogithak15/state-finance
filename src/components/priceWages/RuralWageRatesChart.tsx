@@ -257,7 +257,7 @@ const RuralWageRatesChart: React.FC = () => {
                 />
                 <YAxis
                   tick={{ fontSize: 12, fill: colors.axisText }}
-                  axisLine={false}
+                  axisLine={{ stroke: colors.grid }}
                   tickLine={false}
                   tickFormatter={(v: number) => formatInr(v)}
                   width={72}

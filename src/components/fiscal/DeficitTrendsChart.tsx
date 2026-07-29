@@ -7,14 +7,13 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   TooltipContentProps,
-  DefaultLegendContentProps,
 } from 'recharts';
 import { fetchFiscalFinancialYearSeries, FISCAL_METRICS } from '../../api/fiscalApi';
 import { formatInrShort } from '../../utils/format';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
+import { SearchIcon } from '../icons';
 import './DeficitTrendsChart.css';
 
 interface TrendRow {
@@ -39,9 +38,11 @@ const DeficitTrendsChart: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [colorMap, setColorMap] = useState<Record<string, string>>({});
   const hasSetDefaultRef = useRef(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -63,14 +64,31 @@ const DeficitTrendsChart: React.FC = () => {
     };
   }, [measureId]);
 
+  // Close the add-state dropdown on an outside click.
+  useEffect(() => {
+    if (!pickerOpen) return undefined;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+        setPickerOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [pickerOpen]);
+
   const allStates = useMemo(
     () => Array.from(new Set(rows.map((r) => r.dimension_name))).sort((a, b) => a.localeCompare(b)),
     [rows]
   );
 
-  const filteredStates = useMemo(
-    () => allStates.filter((name) => name.toLowerCase().includes(search.trim().toLowerCase())),
-    [allStates, search]
+  const availableStates = useMemo(
+    () => allStates.filter((name) => !selected.includes(name)),
+    [allStates, selected]
+  );
+
+  const filteredAvailableStates = useMemo(
+    () => availableStates.filter((name) => name.toLowerCase().includes(search.trim().toLowerCase())),
+    [availableStates, search]
   );
 
   // Pre-select a small, data-driven starting set (highest / median / lowest
@@ -126,6 +144,11 @@ const DeficitTrendsChart: React.FC = () => {
     });
   };
 
+  const addState = (name: string) => {
+    toggleState(name);
+    setSearch('');
+  };
+
   const clearAll = () => {
     setSelected([]);
     setColorMap({});
@@ -141,8 +164,7 @@ const DeficitTrendsChart: React.FC = () => {
 
       <div className="deficit-trends-sign-note">Sign convention: positive = deficit, negative = surplus.</div>
 
-      <div className="deficit-trends-control-group">
-        <span className="deficit-trends-control-label">Measure</span>
+      <div className="deficit-trends-controls">
         <select
           className="deficit-trends-measure-select"
           value={measureId}
@@ -154,73 +176,105 @@ const DeficitTrendsChart: React.FC = () => {
             </option>
           ))}
         </select>
+
+        <div className="deficit-trends-state-picker" ref={pickerRef}>
+          <div className="deficit-trends-state-input-wrap">
+            <SearchIcon width={14} height={14} className="deficit-trends-search-icon" />
+            <input
+              type="text"
+              className="deficit-trends-state-input"
+              placeholder="Add a state to compare…"
+              value={search}
+              onFocus={() => setPickerOpen(true)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPickerOpen(true);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && filteredAvailableStates.length > 0) {
+                  e.preventDefault();
+                  addState(filteredAvailableStates[0]);
+                }
+              }}
+            />
+          </div>
+          {pickerOpen && (
+            <div className="deficit-trends-state-dropdown">
+              {filteredAvailableStates.map((name) => (
+                <button
+                  key={name}
+                  type="button"
+                  className="deficit-trends-state-option"
+                  onClick={() => addState(name)}
+                >
+                  {name}
+                </button>
+              ))}
+              {filteredAvailableStates.length === 0 && (
+                <span className="deficit-trends-state-dropdown-empty">
+                  {availableStates.length === 0 ? 'All states added.' : `No states match “${search}”.`}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="deficit-trends-control-group">
-        <div className="deficit-trends-control-header">
-          <span className="deficit-trends-control-label">Search States</span>
-          {selected.length > 0 && (
-            <button type="button" className="deficit-trends-clear-all-link" onClick={clearAll}>
-              clear all
-            </button>
-          )}
-        </div>
-        <input
-          type="text"
-          className="deficit-trends-state-search-input"
-          placeholder="Type to filter…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <div className="deficit-trends-state-pill-grid">
-          {filteredStates.map((name) => {
-            const isSelected = selected.includes(name);
-            return (
+      {selected.length > 0 && (
+        <div className="deficit-trends-chips-row">
+          {selected.map((name) => (
+            <span key={name} className="deficit-trends-chip" style={{ background: colorMap[name] }}>
+              {name}
               <button
-                key={name}
                 type="button"
-                className={`deficit-trends-state-pill${isSelected ? ' selected' : ''}`}
-                style={isSelected ? { background: colorMap[name], borderColor: colorMap[name] } : undefined}
+                className="deficit-trends-chip-remove"
                 onClick={() => toggleState(name)}
+                aria-label={`Remove ${name}`}
               >
-                {name}
+                ×
               </button>
-            );
-          })}
-          {!loading && filteredStates.length === 0 && (
-            <span className="deficit-trends-state-pill-empty">No states match “{search}”.</span>
-          )}
+            </span>
+          ))}
+          <button type="button" className="deficit-trends-clear-all-link" onClick={clearAll}>
+            clear all
+          </button>
         </div>
-      </div>
+      )}
 
       {error && <div className="deficit-trends-error">{error}</div>}
 
       {!error && selected.length === 0 && (
         <div className="deficit-trends-empty">
-          {loading ? 'Loading states…' : 'Select one or more states above to see their deficit trend.'}
+          {loading ? 'Loading states…' : 'Add a state above to see its deficit trend.'}
         </div>
       )}
 
       {!error && selected.length > 0 && (
         <div className="deficit-trends-chart">
-          <ResponsiveContainer width="100%" height={380}>
-            <LineChart data={chartData} margin={{ top: 8, right: 24, left: 8, bottom: 8 }}>
+          <ResponsiveContainer width="100%" height={360}>
+            <LineChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
               <CartesianGrid stroke={colors.grid} />
               <XAxis
                 dataKey="period"
-                tick={{ fontSize: 12, fill: colors.axisText }}
+                tick={{ fontSize: 11, fill: colors.axisText }}
                 axisLine={{ stroke: colors.grid }}
                 tickLine={false}
+                interval="preserveStartEnd"
+                minTickGap={16}
               />
               <YAxis
-                tick={{ fontSize: 12, fill: colors.axisText }}
-                axisLine={false}
+                tick={(props: { y?: number | string; payload?: { value: number } }) => (
+                  <LeftAlignedYAxisTick {...props} fill={colors.axisText} />
+                )}
+                axisLine={{ stroke: colors.grid }}
                 tickLine={false}
                 tickFormatter={(v: number) => formatInrShort(v)}
-                width={92}
+                width={44}
               />
-              <Tooltip content={(props) => <DeficitTrendsTooltip {...props} />} />
-              <Legend content={(props) => <DeficitTrendsLegend {...props} />} />
+              <Tooltip
+                content={(props) => <DeficitTrendsTooltip {...props} />}
+                cursor={{ stroke: colors.axisText, strokeDasharray: '3 3' }}
+              />
               {selected.map((name) => (
                 <Line
                   key={name}
@@ -241,6 +295,18 @@ const DeficitTrendsChart: React.FC = () => {
   );
 };
 
+// Left-aligned so every value starts flush at the card's left edge instead of
+// recharts' default right-aligned ticks, which ragged-left differently-lengthed values.
+const LeftAlignedYAxisTick: React.FC<{ y?: number | string; payload?: { value: number }; fill: string }> = ({
+  y,
+  payload,
+  fill,
+}) => (
+  <text x={4} y={y} dy={4} fontSize={11} fill={fill} textAnchor="start">
+    {formatInrShort(payload?.value ?? 0)}
+  </text>
+);
+
 const DeficitTrendsTooltip: React.FC<TooltipContentProps> = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) return null;
   const sorted = [...payload].sort((a, b) => (Number(b.value) || 0) - (Number(a.value) || 0));
@@ -253,20 +319,6 @@ const DeficitTrendsTooltip: React.FC<TooltipContentProps> = ({ active, payload, 
           <span className="deficit-trends-tooltip-value">{formatInrShort(Number(entry.value))}</span>
           <span className="deficit-trends-tooltip-name">{String(entry.dataKey)}</span>
         </div>
-      ))}
-    </div>
-  );
-};
-
-const DeficitTrendsLegend: React.FC<DefaultLegendContentProps> = ({ payload }) => {
-  if (!payload) return null;
-  return (
-    <div className="deficit-trends-legend">
-      {payload.map((entry) => (
-        <span className="deficit-trends-legend-item" key={String(entry.dataKey)}>
-          <span className="deficit-trends-legend-dot" style={{ background: entry.color }} />
-          {entry.value}
-        </span>
       ))}
     </div>
   );

@@ -14,30 +14,162 @@
 }
 
 .inflation-trends-desc {
-  margin: 0 0 20px;
+  margin: 0 0 18px;
   font-size: 13.5px;
   line-height: 1.5;
   color: var(--color-text-muted);
+  max-width: 720px;
 }
 
-.inflation-trends-control-group {
+/* Control row — compact All-India toggle + add-state search, side by side */
+.inflation-trends-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+/* Compact pill toggle — a secondary setting, not a primary nav element */
+.inflation-average-toggle {
+  appearance: none;
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.inflation-average-toggle.active {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #ffffff;
+}
+
+/* Add-state search + dropdown */
+.inflation-trends-state-picker {
+  position: relative;
+  flex: 1 1 240px;
+  min-width: 200px;
+}
+
+.inflation-trends-state-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.inflation-trends-state-input-wrap:focus-within {
+  border-color: var(--color-accent);
+}
+
+.inflation-trends-search-icon {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.inflation-trends-state-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 13px;
+  color: var(--color-text);
+}
+
+.inflation-trends-state-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.inflation-trends-state-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 10px;
+  padding: 6px;
+  z-index: 20;
+}
+
+.inflation-trends-state-option {
+  display: block;
+  width: 100%;
+  appearance: none;
+  border: none;
+  background: none;
+  text-align: left;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.inflation-trends-state-option:hover {
+  background: var(--color-bg);
+}
+
+.inflation-trends-state-dropdown-empty {
+  display: block;
+  padding: 8px 10px;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+/* Selected-state chips, colored to match their chart line */
+.inflation-trends-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 18px;
 }
 
-.inflation-trends-control-header {
-  display: flex;
+.inflation-trends-chip {
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 6px;
+  padding: 5px 6px 5px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ffffff;
 }
 
-.inflation-trends-control-label {
-  display: block;
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  margin-bottom: 8px;
+.inflation-trends-chip-remove {
+  appearance: none;
+  border: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.inflation-trends-chip-remove:hover {
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .inflation-clear-all-link {
@@ -53,75 +185,6 @@
 
 .inflation-clear-all-link:hover {
   text-decoration: underline;
-}
-
-.all-india-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 14px;
-  border-radius: 999px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--color-text);
-  cursor: pointer;
-}
-
-.all-india-toggle input {
-  accent-color: var(--color-accent);
-}
-
-/* State search + pills */
-.inflation-state-search-input {
-  width: 100%;
-  max-width: 420px;
-  padding: 9px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  font-size: 13.5px;
-  color: var(--color-text);
-  margin-bottom: 12px;
-}
-
-.inflation-state-search-input:focus {
-  outline: none;
-  border-color: var(--color-accent);
-}
-
-.inflation-state-pill-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.inflation-state-pill {
-  appearance: none;
-  border-radius: 999px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  padding: 6px 13px;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--color-text);
-  cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
-}
-
-.inflation-state-pill:hover {
-  border-color: var(--color-accent);
-}
-
-.inflation-state-pill.selected {
-  color: #ffffff;
-  font-weight: 600;
-}
-
-.inflation-state-pill-empty {
-  font-size: 12.5px;
-  color: var(--color-text-muted);
 }
 
 /* Chart states */
@@ -141,10 +204,6 @@
   color: var(--color-danger-text);
   border-color: var(--color-danger-border);
   background: var(--color-danger-bg);
-}
-
-.inflation-trends-chart {
-  margin-top: 4px;
 }
 
 /* Tooltip */
@@ -189,45 +248,20 @@
   color: var(--color-text-muted);
 }
 
-/* Legend */
-.inflation-trends-legend {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px;
-  padding-top: 12px;
-}
-
-.inflation-trends-legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--color-text);
-}
-
-.inflation-trends-legend-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
 @media (max-width: 700px) {
   .inflation-trends {
-    padding: 18px 16px;
+    padding: 16px;
   }
 
   .inflation-trends-title {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .inflation-trends-desc {
     font-size: 13px;
   }
 
-  .inflation-state-search-input {
-    max-width: 100%;
+  .inflation-trends-state-picker {
+    flex-basis: 100%;
   }
 }

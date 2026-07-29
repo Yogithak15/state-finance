@@ -14,46 +14,158 @@
 }
 
 .deposits-credit-trend-desc {
-  margin: 0 0 20px;
+  margin: 0 0 18px;
   font-size: 13.5px;
   line-height: 1.5;
   color: var(--color-text-muted);
+  max-width: 720px;
 }
 
-.deposits-credit-trend-control-group {
-  margin-bottom: 18px;
-}
-
-.deposits-credit-trend-control-header {
+/* Control row — compact measure select + add-state search, side by side */
+.deposits-credit-trend-controls {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-}
-
-.deposits-credit-trend-control-label {
-  display: block;
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
 .deposits-credit-measure-select {
-  padding: 8px 12px;
+  flex-shrink: 0;
+  padding: 6px 10px;
   border-radius: 8px;
   border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  font-size: 13px;
-  font-weight: 500;
+  background: var(--color-bg);
+  font-size: 12.5px;
+  font-weight: 600;
   color: var(--color-text);
-  min-width: 220px;
+  max-width: 190px;
 }
 
 .deposits-credit-measure-select:focus {
   outline: none;
   border-color: var(--color-accent);
+}
+
+/* Add-state search + dropdown */
+.deposits-credit-state-picker {
+  position: relative;
+  flex: 1 1 240px;
+  min-width: 200px;
+}
+
+.deposits-credit-state-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.deposits-credit-state-input-wrap:focus-within {
+  border-color: var(--color-accent);
+}
+
+.deposits-credit-search-icon {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.deposits-credit-state-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 13px;
+  color: var(--color-text);
+}
+
+.deposits-credit-state-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.deposits-credit-state-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 10px;
+  padding: 6px;
+  z-index: 20;
+}
+
+.deposits-credit-state-option {
+  display: block;
+  width: 100%;
+  appearance: none;
+  border: none;
+  background: none;
+  text-align: left;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.deposits-credit-state-option:hover {
+  background: var(--color-bg);
+}
+
+.deposits-credit-state-dropdown-empty {
+  display: block;
+  padding: 8px 10px;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+/* Selected-state chips, colored to match their chart line */
+.deposits-credit-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.deposits-credit-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px 5px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.deposits-credit-chip-remove {
+  appearance: none;
+  border: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.deposits-credit-chip-remove:hover {
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .deposits-credit-clear-all-link {
@@ -69,57 +181,6 @@
 
 .deposits-credit-clear-all-link:hover {
   text-decoration: underline;
-}
-
-/* State search + pills */
-.deposits-credit-state-search-input {
-  width: 100%;
-  max-width: 420px;
-  padding: 9px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  font-size: 13.5px;
-  color: var(--color-text);
-  margin-bottom: 12px;
-}
-
-.deposits-credit-state-search-input:focus {
-  outline: none;
-  border-color: var(--color-accent);
-}
-
-.deposits-credit-state-pill-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.deposits-credit-state-pill {
-  appearance: none;
-  border-radius: 999px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  padding: 6px 13px;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--color-text);
-  cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
-}
-
-.deposits-credit-state-pill:hover {
-  border-color: var(--color-accent);
-}
-
-.deposits-credit-state-pill.selected {
-  color: #ffffff;
-  font-weight: 600;
-}
-
-.deposits-credit-state-pill-empty {
-  font-size: 12.5px;
-  color: var(--color-text-muted);
 }
 
 /* Chart states */
@@ -139,10 +200,6 @@
   color: var(--color-danger-text);
   border-color: var(--color-danger-border);
   background: var(--color-danger-bg);
-}
-
-.deposits-credit-trend-chart {
-  margin-top: 4px;
 }
 
 /* Tooltip */
@@ -187,34 +244,9 @@
   color: var(--color-text-muted);
 }
 
-/* Legend */
-.deposits-credit-trend-legend {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px;
-  padding-top: 12px;
-}
-
-.deposits-credit-trend-legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--color-text);
-}
-
-.deposits-credit-trend-legend-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
 @media (max-width: 700px) {
   .deposits-credit-trend {
-    padding: 16px 16px;
+    padding: 16px;
   }
 
   .deposits-credit-trend-title {
@@ -225,7 +257,12 @@
     font-size: 13px;
   }
 
-  .deposits-credit-state-search-input {
-    max-width: 100%;
+  .deposits-credit-measure-select {
+    max-width: none;
+    width: 100%;
+  }
+
+  .deposits-credit-state-picker {
+    flex-basis: 100%;
   }
 }
