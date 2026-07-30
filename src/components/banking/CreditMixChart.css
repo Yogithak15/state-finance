@@ -215,4 +215,8 @@
     min-width: 0;
     width: 100%;
   }
+
+  .credit-mix-show-toggle {
+    flex-wrap: wrap;
+  }
 }

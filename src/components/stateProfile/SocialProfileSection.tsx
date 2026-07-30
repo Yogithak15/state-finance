@@ -247,6 +247,7 @@ const SocialProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={pct1}
             colors={colors}
+            title="Gross Enrolment Ratio by stage (latest available year per series, %)"
           />
         </ChartBlock>
         <ChartBlock title="Gender Parity Index of GER by level">
@@ -256,6 +257,7 @@ const SocialProfileSection: React.FC<Props> = ({ state }) => {
             yFormatter={unitless2}
             colors={colors}
             referenceLines={[{ y: 1, label: 'Parity', color: colors.muted }]}
+            title="Gender Parity Index of GER by level"
           />
         </ChartBlock>
         <ChartBlock title="Birth rate & death rate over time (per 1,000 population)">
@@ -267,6 +269,7 @@ const SocialProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={oneDecimal}
             colors={colors}
+            title="Birth rate & death rate over time (per 1,000 population)"
           />
         </ChartBlock>
         <ChartBlock title="Infant mortality rate over time (per 1,000 live births)">
@@ -275,6 +278,7 @@ const SocialProfileSection: React.FC<Props> = ({ state }) => {
             series={[{ key: 'Infant mortality rate', label: 'Infant mortality rate', color: colors.categorical[5] }]}
             yFormatter={oneDecimal}
             colors={colors}
+            title="Infant mortality rate over time (per 1,000 live births)"
           />
         </ChartBlock>
         <ChartBlock title="Total fertility rate over time (children per woman)">
@@ -284,6 +288,7 @@ const SocialProfileSection: React.FC<Props> = ({ state }) => {
             yFormatter={unitless2}
             colors={colors}
             referenceLines={[{ y: 2.1, label: 'Replacement level', color: colors.muted }]}
+            title="Total fertility rate over time (children per woman)"
           />
         </ChartBlock>
         <ChartBlock title="Life expectancy at birth over time (years)">
@@ -296,6 +301,7 @@ const SocialProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={oneDecimal}
             colors={colors}
+            title="Life expectancy at birth over time (years)"
           />
         </ChartBlock>
         <ChartBlock title="Multidimensional Poverty Index by NFHS round">
@@ -304,6 +310,7 @@ const SocialProfileSection: React.FC<Props> = ({ state }) => {
             series={[{ key: INDEX_KEY, label: 'MPI Index', color: colors.categorical[3] }]}
             yFormatter={unitless2}
             colors={colors}
+            title="Multidimensional Poverty Index by NFHS round"
           />
         </ChartBlock>
         <ChartBlock title="Poverty headcount ratio & intensity by NFHS round (%)">
@@ -315,6 +322,7 @@ const SocialProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={pct1}
             colors={colors}
+            title="Poverty headcount ratio & intensity by NFHS round (%)"
           />
         </ChartBlock>
         <ChartBlock title="Natural population growth rate over time (%)">
@@ -327,6 +335,7 @@ const SocialProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={oneDecimal}
             colors={colors}
+            title="Natural population growth rate over time (%)"
           />
         </ChartBlock>
         <ChartBlock title="Rural unemployment rate over time (per 1,000 labour force)">
@@ -339,6 +348,7 @@ const SocialProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={oneDecimal}
             colors={colors}
+            title="Rural unemployment rate over time (per 1,000 labour force)"
           />
         </ChartBlock>
         <ChartBlock title="Urban unemployment rate over time (per 1,000 labour force)">
@@ -351,6 +361,7 @@ const SocialProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={oneDecimal}
             colors={colors}
+            title="Urban unemployment rate over time (per 1,000 labour force)"
           />
         </ChartBlock>
         <ChartBlock title="Domestic tourist visits over time (millions)">
@@ -361,6 +372,7 @@ const SocialProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={oneDecimal}
             colors={colors}
+            title="Domestic tourist visits over time (millions)"
           />
         </ChartBlock>
       </ChartGrid>

@@ -3,6 +3,7 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
+  Cell,
   AreaChart,
   Area,
   XAxis,
@@ -13,8 +14,10 @@ import {
 } from 'recharts';
 import { fetchFiscalFinancialYearSeries, FISCAL_METRICS } from '../../api/fiscalApi';
 import { formatInrShort } from '../../utils/format';
+import { rankColor } from '../../utils/rankColor';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
+import { ExpandableChart } from '../ExpandableChart';
 import './BorrowingsGuaranteesChart.css';
 
 interface MetricRow {
@@ -194,45 +197,51 @@ const BorrowingsGuaranteesChart: React.FC = () => {
 
           {!marketError && !marketLoading && displayRows.length > 0 && (
             <>
-              <div
+              <ExpandableChart
+                title="6a · Market Borrowings"
+                height={Math.max(displayRows.length * 32, 120)}
                 className="borrowings-guarantees-chart"
-                style={{ height: Math.max(displayRows.length * 32, 120) }}
               >
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={displayRows}
-                    layout="vertical"
-                    margin={{ top: 4, right: 70, left: 8, bottom: 4 }}
-                    barCategoryGap={6}
-                  >
-                    <CartesianGrid stroke={colors.grid} horizontal={false} />
-                    <XAxis
-                      type="number"
-                      tick={{ fontSize: 12, fill: colors.axisText }}
-                      axisLine={{ stroke: colors.grid }}
-                      tickLine={false}
-                      tickFormatter={(v: number) => formatInrShort(v)}
-                    />
-                    <YAxis
-                      type="category"
-                      dataKey="dimension_name"
-                      tick={{ fontSize: 12.5, fill: colors.ink }}
-                      axisLine={{ stroke: colors.grid }}
-                      tickLine={false}
-                      width={110}
-                    />
-                    <Tooltip cursor={false} content={(props) => <MarketBorrowingsTooltip {...props} />} />
-                    <Bar
-                      dataKey="value"
-                      name="Gross amount raised"
-                      fill={colors.ink}
-                      radius={2}
-                      maxBarSize={22}
-                      activeBar={{ stroke: 'transparent' }}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+                {(h) => (
+                  <ResponsiveContainer width="100%" height={h}>
+                    <BarChart
+                      data={displayRows}
+                      layout="vertical"
+                      margin={{ top: 4, right: 70, left: 8, bottom: 4 }}
+                      barCategoryGap={6}
+                    >
+                      <CartesianGrid stroke={colors.grid} horizontal={false} />
+                      <XAxis
+                        type="number"
+                        tick={{ fontSize: 12, fill: colors.axisText }}
+                        axisLine={{ stroke: colors.grid }}
+                        tickLine={false}
+                        tickFormatter={(v: number) => formatInrShort(v)}
+                      />
+                      <YAxis
+                        type="category"
+                        dataKey="dimension_name"
+                        tick={{ fontSize: 12.5, fill: colors.ink }}
+                        axisLine={{ stroke: colors.grid }}
+                        tickLine={false}
+                        width={110}
+                      />
+                      <Tooltip cursor={false} content={(props) => <MarketBorrowingsTooltip {...props} />} />
+                      <Bar
+                        dataKey="value"
+                        name="Gross amount raised"
+                        radius={2}
+                        maxBarSize={22}
+                        activeBar={{ stroke: 'transparent' }}
+                      >
+                        {displayRows.map((row, index) => (
+                          <Cell key={row.dimension_id} fill={rankColor(index, displayRows.length, theme)} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                )}
+              </ExpandableChart>
               <div className="borrowings-guarantees-footnote">
                 {show === 'top15' ? 'Top 15 states' : 'All states'} by gross amount raised, {year}. Per-state
                 repayment figures aren't separately tracked in this dataset, so only gross issuance is shown.
@@ -275,42 +284,44 @@ const BorrowingsGuaranteesChart: React.FC = () => {
           )}
 
           {!guaranteeError && !guaranteeLoading && guaranteeChartData.length > 0 && (
-            <div className="borrowings-guarantees-chart">
-              <ResponsiveContainer width="100%" height={340}>
-                <AreaChart data={guaranteeChartData} margin={{ top: 8, right: 24, left: 8, bottom: 8 }}>
-                  <defs>
-                    <linearGradient id="guaranteesFill" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={colors.categorical[4]} stopOpacity={0.35} />
-                      <stop offset="100%" stopColor={colors.categorical[4]} stopOpacity={0.03} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid stroke={colors.grid} />
-                  <XAxis
-                    dataKey="period"
-                    tick={{ fontSize: 12, fill: colors.axisText }}
-                    axisLine={{ stroke: colors.grid }}
-                    tickLine={false}
-                  />
-                  <YAxis
-                    tick={{ fontSize: 12, fill: colors.axisText }}
-                    axisLine={{ stroke: colors.grid }}
-                    tickLine={false}
-                    tickFormatter={(v: number) => formatInrShort(v)}
-                    width={72}
-                  />
-                  <Tooltip content={(props) => <GuaranteesTooltip {...props} />} />
-                  <Area
-                    type="monotone"
-                    dataKey="value"
-                    stroke={colors.categorical[4]}
-                    strokeWidth={2}
-                    fill="url(#guaranteesFill)"
-                    dot={{ r: 3, fill: colors.categorical[4], stroke: colors.surface, strokeWidth: 2 }}
-                    activeDot={{ r: 5, fill: colors.categorical[4], stroke: colors.surface, strokeWidth: 2 }}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
+            <ExpandableChart title="6b · Outstanding Guarantees" height={340} className="borrowings-guarantees-chart">
+              {(h) => (
+                <ResponsiveContainer width="100%" height={h}>
+                  <AreaChart data={guaranteeChartData} margin={{ top: 8, right: 24, left: 8, bottom: 8 }}>
+                    <defs>
+                      <linearGradient id="guaranteesFill" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={colors.categorical[4]} stopOpacity={0.35} />
+                        <stop offset="100%" stopColor={colors.categorical[4]} stopOpacity={0.03} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid stroke={colors.grid} />
+                    <XAxis
+                      dataKey="period"
+                      tick={{ fontSize: 12, fill: colors.axisText }}
+                      axisLine={{ stroke: colors.grid }}
+                      tickLine={false}
+                    />
+                    <YAxis
+                      tick={{ fontSize: 12, fill: colors.axisText }}
+                      axisLine={{ stroke: colors.grid }}
+                      tickLine={false}
+                      tickFormatter={(v: number) => formatInrShort(v)}
+                      width={72}
+                    />
+                    <Tooltip content={(props) => <GuaranteesTooltip {...props} />} />
+                    <Area
+                      type="monotone"
+                      dataKey="value"
+                      stroke={colors.categorical[4]}
+                      strokeWidth={2}
+                      fill="url(#guaranteesFill)"
+                      dot={{ r: 3, fill: colors.categorical[4], stroke: colors.surface, strokeWidth: 2 }}
+                      activeDot={{ r: 5, fill: colors.categorical[4], stroke: colors.surface, strokeWidth: 2 }}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              )}
+            </ExpandableChart>
           )}
         </>
       )}

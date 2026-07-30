@@ -135,3 +135,15 @@ code {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-scrollbar-thumb-hover);
 }
+
+/* Pill-shaped toggle buttons (role="radio") across the app already show
+   selection via their own fill/border, so the browser's default focus
+   outline — rectangular, and clashing with the pill's border-radius — is
+   replaced with a shaped ring that only appears for keyboard focus. */
+button[role='radio'] {
+  outline: none;
+}
+
+button[role='radio']:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-accent);
+}

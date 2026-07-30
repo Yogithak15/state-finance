@@ -108,6 +108,7 @@ const SdpProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={formatInrShort}
             colors={colors}
+            title="GSDP & NSDP over time (current prices)"
           />
         </ChartBlock>
         <ChartBlock title="GSDP & NSDP over time (constant prices)">
@@ -119,6 +120,7 @@ const SdpProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={formatInrShort}
             colors={colors}
+            title="GSDP & NSDP over time (constant prices)"
           />
         </ChartBlock>
       </ChartGrid>

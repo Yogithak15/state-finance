@@ -7,15 +7,15 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ReferenceLine,
   TooltipContentProps,
-  DefaultLegendContentProps,
 } from 'recharts';
 import { fetchFiscalFinancialYearSeries, FISCAL_METRICS, FISCAL_DEFICIT_GSDP_LIMIT } from '../../api/fiscalApi';
 import { fetchSdpFinancialYearSeries, SDP_METRICS } from '../../api/stateDomesticProductApi';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
+import { SearchIcon } from '../icons';
+import { ExpandableChart } from '../ExpandableChart';
 import './DeficitGsdpChart.css';
 
 interface MetricRow {
@@ -44,9 +44,11 @@ const DeficitGsdpChart: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [colorMap, setColorMap] = useState<Record<string, string>>({});
   const hasSetDefaultRef = useRef(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -71,6 +73,18 @@ const DeficitGsdpChart: React.FC = () => {
       cancelled = true;
     };
   }, [measure]);
+
+  // Close the add-state dropdown on an outside click.
+  useEffect(() => {
+    if (!pickerOpen) return undefined;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+        setPickerOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [pickerOpen]);
 
   // Ratio per state/year — only for years where both the fiscal metric and
   // GSDP have data. GSDP (State Domestic Product) only goes back to 2011-12,
@@ -99,9 +113,14 @@ const DeficitGsdpChart: React.FC = () => {
     [ratioRows]
   );
 
-  const filteredStates = useMemo(
-    () => allStates.filter((name) => name.toLowerCase().includes(search.trim().toLowerCase())),
-    [allStates, search]
+  const availableStates = useMemo(
+    () => allStates.filter((name) => !selected.includes(name)),
+    [allStates, selected]
+  );
+
+  const filteredAvailableStates = useMemo(
+    () => availableStates.filter((name) => name.toLowerCase().includes(search.trim().toLowerCase())),
+    [availableStates, search]
   );
 
   useEffect(() => {
@@ -155,6 +174,11 @@ const DeficitGsdpChart: React.FC = () => {
     });
   };
 
+  const addState = (name: string) => {
+    toggleState(name);
+    setSearch('');
+  };
+
   const clearAll = () => {
     setSelected([]);
     setColorMap({});
@@ -172,9 +196,8 @@ const DeficitGsdpChart: React.FC = () => {
         {FISCAL_DEFICIT_GSDP_LIMIT}% ceiling.
       </p>
 
-      <div className="deficit-gsdp-control-group">
-        <span className="deficit-gsdp-control-label">Measure</span>
-        <div className="deficit-gsdp-measure-toggle" role="radiogroup">
+      <div className="deficit-gsdp-controls">
+        <div className="deficit-gsdp-measure-toggle" role="radiogroup" aria-label="Measure">
           {(['gross', 'revenue'] as Measure[]).map((m) => (
             <button
               key={m}
@@ -184,100 +207,137 @@ const DeficitGsdpChart: React.FC = () => {
               className={`deficit-gsdp-measure-option${measure === m ? ' active' : ''}`}
               onClick={() => setMeasure(m)}
             >
-              <span className="deficit-gsdp-measure-dot" />
               {m === 'gross' ? 'Gross Fiscal Deficit' : 'Revenue Deficit'}
             </button>
           ))}
         </div>
+
+        <div className="deficit-gsdp-state-picker" ref={pickerRef}>
+          <div className="deficit-gsdp-state-input-wrap">
+            <SearchIcon width={14} height={14} className="deficit-gsdp-search-icon" />
+            <input
+              type="text"
+              className="deficit-gsdp-state-input"
+              placeholder="Add a state to compare…"
+              value={search}
+              onFocus={() => setPickerOpen(true)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPickerOpen(true);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && filteredAvailableStates.length > 0) {
+                  e.preventDefault();
+                  addState(filteredAvailableStates[0]);
+                }
+              }}
+            />
+          </div>
+          {pickerOpen && (
+            <div className="deficit-gsdp-state-dropdown">
+              {filteredAvailableStates.map((name) => (
+                <button
+                  key={name}
+                  type="button"
+                  className="deficit-gsdp-state-option"
+                  onClick={() => addState(name)}
+                >
+                  {name}
+                </button>
+              ))}
+              {filteredAvailableStates.length === 0 && (
+                <span className="deficit-gsdp-state-dropdown-empty">
+                  {availableStates.length === 0 ? 'All states added.' : `No states match “${search}”.`}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="deficit-gsdp-control-group">
-        <div className="deficit-gsdp-control-header">
-          <span className="deficit-gsdp-control-label">Search States</span>
-          {selected.length > 0 && (
-            <button type="button" className="deficit-gsdp-clear-all-link" onClick={clearAll}>
-              clear all
-            </button>
-          )}
-        </div>
-        <input
-          type="text"
-          className="deficit-gsdp-state-search-input"
-          placeholder="Type to filter…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <div className="deficit-gsdp-state-pill-grid">
-          {filteredStates.map((name) => {
-            const isSelected = selected.includes(name);
-            return (
+      {selected.length > 0 && (
+        <div className="deficit-gsdp-chips-row">
+          {selected.map((name) => (
+            <span key={name} className="deficit-gsdp-chip" style={{ background: colorMap[name] }}>
+              {name}
               <button
-                key={name}
                 type="button"
-                className={`deficit-gsdp-state-pill${isSelected ? ' selected' : ''}`}
-                style={isSelected ? { background: colorMap[name], borderColor: colorMap[name] } : undefined}
+                className="deficit-gsdp-chip-remove"
                 onClick={() => toggleState(name)}
+                aria-label={`Remove ${name}`}
               >
-                {name}
+                ×
               </button>
-            );
-          })}
-          {!loading && filteredStates.length === 0 && (
-            <span className="deficit-gsdp-state-pill-empty">No states match “{search}”.</span>
-          )}
+            </span>
+          ))}
+          <button type="button" className="deficit-gsdp-clear-all-link" onClick={clearAll}>
+            clear all
+          </button>
         </div>
-      </div>
+      )}
 
       {error && <div className="deficit-gsdp-error">{error}</div>}
 
       {!error && selected.length === 0 && (
         <div className="deficit-gsdp-empty">
-          {loading ? 'Loading states…' : 'Select one or more states above to see their ratio trend.'}
+          {loading ? 'Loading states…' : 'Add a state above to see its ratio trend.'}
         </div>
       )}
 
       {!error && selected.length > 0 && (
         <>
-          <div className="deficit-gsdp-chart">
-            <ResponsiveContainer width="100%" height={380}>
-              <LineChart data={chartData} margin={{ top: 8, right: 24, left: 8, bottom: 8 }}>
-                <CartesianGrid stroke={colors.grid} />
-                <XAxis
-                  dataKey="period"
-                  tick={{ fontSize: 12, fill: colors.axisText }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                />
-                <YAxis
-                  tick={{ fontSize: 12, fill: colors.axisText }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                  tickFormatter={(v: number) => pct(v)}
-                  width={48}
-                />
-                <Tooltip content={(props) => <DeficitGsdpTooltip {...props} />} />
-                <Legend content={(props) => <DeficitGsdpLegend {...props} />} />
-                <ReferenceLine
-                  y={refLineValue}
-                  stroke={colors.categorical[5]}
-                  strokeDasharray="6 4"
-                  label={{ value: refLineLabel, position: 'insideBottomLeft', fill: colors.categorical[5], fontSize: 11 }}
-                />
-                {selected.map((name) => (
-                  <Line
-                    key={name}
-                    type="monotone"
-                    dataKey={name}
-                    stroke={colorMap[name]}
-                    strokeWidth={2}
-                    dot={{ r: 3, fill: colorMap[name], stroke: colors.surface, strokeWidth: 2 }}
-                    activeDot={{ r: 5, fill: colorMap[name], stroke: colors.surface, strokeWidth: 2 }}
-                    connectNulls
+          <ExpandableChart
+            title="2 · Deficit as a Share of the Economy"
+            height={360}
+            className="deficit-gsdp-chart"
+          >
+            {(h) => (
+              <ResponsiveContainer width="100%" height={h}>
+                <LineChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
+                  <CartesianGrid stroke={colors.grid} />
+                  <XAxis
+                    dataKey="period"
+                    tick={{ fontSize: 11, fill: colors.axisText }}
+                    axisLine={{ stroke: colors.grid }}
+                    tickLine={false}
+                    interval="preserveStartEnd"
+                    minTickGap={16}
                   />
-                ))}
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+                  <YAxis
+                    tick={(props: { y?: number | string; payload?: { value: number } }) => (
+                      <LeftAlignedYAxisTick {...props} fill={colors.axisText} />
+                    )}
+                    axisLine={{ stroke: colors.grid }}
+                    tickLine={false}
+                    tickFormatter={(v: number) => pct(v)}
+                    width={40}
+                  />
+                  <Tooltip
+                    content={(props) => <DeficitGsdpTooltip {...props} />}
+                    cursor={{ stroke: colors.axisText, strokeDasharray: '3 3' }}
+                  />
+                  <ReferenceLine
+                    y={refLineValue}
+                    stroke={colors.categorical[5]}
+                    strokeDasharray="6 4"
+                    label={{ value: refLineLabel, position: 'insideBottomLeft', fill: colors.categorical[5], fontSize: 11 }}
+                  />
+                  {selected.map((name) => (
+                    <Line
+                      key={name}
+                      type="monotone"
+                      dataKey={name}
+                      stroke={colorMap[name]}
+                      strokeWidth={2}
+                      dot={{ r: 3, fill: colorMap[name], stroke: colors.surface, strokeWidth: 2 }}
+                      activeDot={{ r: 5, fill: colorMap[name], stroke: colors.surface, strokeWidth: 2 }}
+                      connectNulls
+                    />
+                  ))}
+                </LineChart>
+              </ResponsiveContainer>
+            )}
+          </ExpandableChart>
           <div className="deficit-gsdp-footnote">
             {measure === 'gross'
               ? `Dashed line marks the FRBM Act's ${FISCAL_DEFICIT_GSDP_LIMIT}%-of-GSDP gross fiscal deficit benchmark.`
@@ -289,6 +349,18 @@ const DeficitGsdpChart: React.FC = () => {
     </div>
   );
 };
+
+// Left-aligned so every value starts flush at the card's left edge instead of
+// recharts' default right-aligned ticks, which ragged-left differently-lengthed values.
+const LeftAlignedYAxisTick: React.FC<{ y?: number | string; payload?: { value: number }; fill: string }> = ({
+  y,
+  payload,
+  fill,
+}) => (
+  <text x={4} y={y} dy={4} fontSize={11} fill={fill} textAnchor="start">
+    {pct(payload?.value ?? 0)}
+  </text>
+);
 
 const DeficitGsdpTooltip: React.FC<TooltipContentProps> = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) return null;
@@ -303,22 +375,6 @@ const DeficitGsdpTooltip: React.FC<TooltipContentProps> = ({ active, payload, la
           <span className="deficit-gsdp-tooltip-name">{String(entry.dataKey)}</span>
         </div>
       ))}
-    </div>
-  );
-};
-
-const DeficitGsdpLegend: React.FC<DefaultLegendContentProps> = ({ payload }) => {
-  if (!payload) return null;
-  return (
-    <div className="deficit-gsdp-legend">
-      {payload
-        .filter((entry) => typeof entry.dataKey === 'string')
-        .map((entry) => (
-          <span className="deficit-gsdp-legend-item" key={String(entry.dataKey)}>
-            <span className="deficit-gsdp-legend-dot" style={{ background: entry.color }} />
-            {entry.value}
-          </span>
-        ))}
     </div>
   );
 };

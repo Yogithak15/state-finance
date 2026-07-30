@@ -18,7 +18,6 @@
   font-size: 13.5px;
   line-height: 1.5;
   color: var(--color-text-muted);
-  max-width: 720px;
 }
 
 /* Control row — compact metric select + add-state search, side by side */

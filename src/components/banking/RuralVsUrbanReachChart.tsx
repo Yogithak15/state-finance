@@ -19,6 +19,7 @@ import { formatInrShort } from '../../utils/format';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
 import { Region, REGION_MAP, REGION_ORDER } from '../../utils/regionMap';
+import { ExpandableChart } from '../ExpandableChart';
 import './RuralVsUrbanReachChart.css';
 
 interface MetricRow {
@@ -170,51 +171,57 @@ const RuralVsUrbanReachChart: React.FC = () => {
         <>
           <div className="rural-urban-reach-chart-row">
             <span className="rural-urban-axis-title-y">RRB branches per lakh population ({year})</span>
-            <div className="rural-urban-reach-chart-plot">
-              <ResponsiveContainer width="100%" height={460}>
-                <ScatterChart margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
-                  <CartesianGrid stroke={colors.grid} />
-                  <XAxis
-                    type="number"
-                    dataKey="scbPerLakh"
-                    name="SCB offices per lakh population"
-                    tick={{ fontSize: 12, fill: colors.axisText }}
-                    axisLine={{ stroke: colors.grid }}
-                    tickLine={false}
-                  />
-                  <YAxis
-                    type="number"
-                    dataKey="rrbPerLakh"
-                    name="RRB branches per lakh population"
-                    tick={{ fontSize: 12, fill: colors.axisText }}
-                    axisLine={{ stroke: colors.grid }}
-                    tickLine={false}
-                    width={40}
-                  />
-                  <ZAxis type="number" dataKey="deposits" range={[120, 1800]} domain={scaleDomain} />
-                  <Tooltip
-                    content={(props) => (
-                      <RuralUrbanTooltip {...props} regionColors={regionColors} muted={colors.muted} />
-                    )}
-                    cursor={{ strokeDasharray: '3 3' }}
-                  />
-                  <Legend verticalAlign="bottom" content={(props) => <RuralUrbanLegend {...props} />} />
-                  <ReferenceLine x={medianX} stroke={colors.muted} strokeDasharray="4 4" />
-                  <ReferenceLine y={medianY} stroke={colors.muted} strokeDasharray="4 4" />
-                  {REGION_ORDER.map((region) => (
-                    <Scatter
-                      key={region}
-                      name={region}
-                      data={points.filter((p) => p.region === region)}
-                      fill={regionColors[region]}
-                      fillOpacity={0.7}
-                      stroke={regionColors[region]}
-                      strokeWidth={1}
+            <ExpandableChart
+              title="6 · Rural vs Urban Banking Reach"
+              height={460}
+              className="rural-urban-reach-chart-plot"
+            >
+              {(h) => (
+                <ResponsiveContainer width="100%" height={h}>
+                  <ScatterChart margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
+                    <CartesianGrid stroke={colors.grid} />
+                    <XAxis
+                      type="number"
+                      dataKey="scbPerLakh"
+                      name="SCB offices per lakh population"
+                      tick={{ fontSize: 12, fill: colors.axisText }}
+                      axisLine={{ stroke: colors.grid }}
+                      tickLine={false}
                     />
-                  ))}
-                </ScatterChart>
-              </ResponsiveContainer>
-            </div>
+                    <YAxis
+                      type="number"
+                      dataKey="rrbPerLakh"
+                      name="RRB branches per lakh population"
+                      tick={{ fontSize: 12, fill: colors.axisText }}
+                      axisLine={{ stroke: colors.grid }}
+                      tickLine={false}
+                      width={40}
+                    />
+                    <ZAxis type="number" dataKey="deposits" range={[120, 1800]} domain={scaleDomain} />
+                    <Tooltip
+                      content={(props) => (
+                        <RuralUrbanTooltip {...props} regionColors={regionColors} muted={colors.muted} />
+                      )}
+                      cursor={{ strokeDasharray: '3 3' }}
+                    />
+                    <Legend verticalAlign="bottom" content={(props) => <RuralUrbanLegend {...props} />} />
+                    <ReferenceLine x={medianX} stroke={colors.muted} strokeDasharray="4 4" />
+                    <ReferenceLine y={medianY} stroke={colors.muted} strokeDasharray="4 4" />
+                    {REGION_ORDER.map((region) => (
+                      <Scatter
+                        key={region}
+                        name={region}
+                        data={points.filter((p) => p.region === region)}
+                        fill={regionColors[region]}
+                        fillOpacity={0.7}
+                        stroke={regionColors[region]}
+                        strokeWidth={1}
+                      />
+                    ))}
+                  </ScatterChart>
+                </ResponsiveContainer>
+              )}
+            </ExpandableChart>
           </div>
           <span className="rural-urban-axis-title-x">SCB offices per lakh population ({year})</span>
           <div className="rural-urban-reach-footnote">

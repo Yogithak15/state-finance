@@ -7,14 +7,14 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ReferenceLine,
   TooltipContentProps,
-  DefaultLegendContentProps,
 } from 'recharts';
 import { fetchBankingFinancialYearSeries, BANKING_METRICS } from '../../api/bankingApi';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
+import { SearchIcon } from '../icons';
+import { ExpandableChart } from '../ExpandableChart';
 import './CreditDepositRatioChart.css';
 
 interface TrendRow {
@@ -42,9 +42,11 @@ const CreditDepositRatioChart: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [colorMap, setColorMap] = useState<Record<string, string>>({});
   const hasSetDefaultRef = useRef(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -66,14 +68,31 @@ const CreditDepositRatioChart: React.FC = () => {
     };
   }, [basis]);
 
+  // Close the add-state dropdown on an outside click.
+  useEffect(() => {
+    if (!pickerOpen) return undefined;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+        setPickerOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [pickerOpen]);
+
   const allStates = useMemo(
     () => Array.from(new Set(rows.map((r) => r.dimension_name))).sort((a, b) => a.localeCompare(b)),
     [rows]
   );
 
-  const filteredStates = useMemo(
-    () => allStates.filter((name) => name.toLowerCase().includes(search.trim().toLowerCase())),
-    [allStates, search]
+  const availableStates = useMemo(
+    () => allStates.filter((name) => !selected.includes(name)),
+    [allStates, selected]
+  );
+
+  const filteredAvailableStates = useMemo(
+    () => availableStates.filter((name) => name.toLowerCase().includes(search.trim().toLowerCase())),
+    [availableStates, search]
   );
 
   // Pre-select a small, data-driven starting set (highest / median / lowest
@@ -129,6 +148,11 @@ const CreditDepositRatioChart: React.FC = () => {
     });
   };
 
+  const addState = (name: string) => {
+    toggleState(name);
+    setSearch('');
+  };
+
   const clearAll = () => {
     setSelected([]);
     setColorMap({});
@@ -144,9 +168,8 @@ const CreditDepositRatioChart: React.FC = () => {
         exporters of credit.
       </p>
 
-      <div className="credit-deposit-ratio-control-group">
-        <span className="credit-deposit-ratio-control-label">Basis</span>
-        <div className="credit-deposit-basis-toggle" role="radiogroup">
+      <div className="credit-deposit-ratio-controls">
+        <div className="credit-deposit-basis-toggle" role="radiogroup" aria-label="Basis">
           {(['sanction', 'utilisation'] as Basis[]).map((b) => (
             <button
               key={b}
@@ -156,95 +179,128 @@ const CreditDepositRatioChart: React.FC = () => {
               className={`credit-deposit-basis-option${basis === b ? ' active' : ''}`}
               onClick={() => setBasis(b)}
             >
-              <span className="credit-deposit-basis-dot" />
               {b === 'sanction' ? 'By sanction' : 'By utilisation'}
             </button>
           ))}
         </div>
+
+        <div className="credit-deposit-state-picker" ref={pickerRef}>
+          <div className="credit-deposit-state-input-wrap">
+            <SearchIcon width={14} height={14} className="credit-deposit-search-icon" />
+            <input
+              type="text"
+              className="credit-deposit-state-input"
+              placeholder="Add a state to compare…"
+              value={search}
+              onFocus={() => setPickerOpen(true)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPickerOpen(true);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && filteredAvailableStates.length > 0) {
+                  e.preventDefault();
+                  addState(filteredAvailableStates[0]);
+                }
+              }}
+            />
+          </div>
+          {pickerOpen && (
+            <div className="credit-deposit-state-dropdown">
+              {filteredAvailableStates.map((name) => (
+                <button
+                  key={name}
+                  type="button"
+                  className="credit-deposit-state-option"
+                  onClick={() => addState(name)}
+                >
+                  {name}
+                </button>
+              ))}
+              {filteredAvailableStates.length === 0 && (
+                <span className="credit-deposit-state-dropdown-empty">
+                  {availableStates.length === 0 ? 'All states added.' : `No states match “${search}”.`}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="credit-deposit-ratio-control-group">
-        <div className="credit-deposit-ratio-control-header">
-          <span className="credit-deposit-ratio-control-label">Search States</span>
-          {selected.length > 0 && (
-            <button type="button" className="credit-deposit-clear-all-link" onClick={clearAll}>
-              clear all
-            </button>
-          )}
-        </div>
-        <input
-          type="text"
-          className="credit-deposit-state-search-input"
-          placeholder="Type to filter…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <div className="credit-deposit-state-pill-grid">
-          {filteredStates.map((name) => {
-            const isSelected = selected.includes(name);
-            return (
+      {selected.length > 0 && (
+        <div className="credit-deposit-chips-row">
+          {selected.map((name) => (
+            <span key={name} className="credit-deposit-chip" style={{ background: colorMap[name] }}>
+              {name}
               <button
-                key={name}
                 type="button"
-                className={`credit-deposit-state-pill${isSelected ? ' selected' : ''}`}
-                style={isSelected ? { background: colorMap[name], borderColor: colorMap[name] } : undefined}
+                className="credit-deposit-chip-remove"
                 onClick={() => toggleState(name)}
+                aria-label={`Remove ${name}`}
               >
-                {name}
+                ×
               </button>
-            );
-          })}
-          {!loading && filteredStates.length === 0 && (
-            <span className="credit-deposit-state-pill-empty">No states match “{search}”.</span>
-          )}
+            </span>
+          ))}
+          <button type="button" className="credit-deposit-clear-all-link" onClick={clearAll}>
+            clear all
+          </button>
         </div>
-      </div>
+      )}
 
       {error && <div className="credit-deposit-ratio-error">{error}</div>}
 
       {!error && selected.length === 0 && (
         <div className="credit-deposit-ratio-empty">
-          {loading ? 'Loading states…' : 'Select one or more states above to see their ratio trend.'}
+          {loading ? 'Loading states…' : 'Add a state above to see its ratio trend.'}
         </div>
       )}
 
       {!error && selected.length > 0 && (
         <>
-          <div className="credit-deposit-ratio-chart">
-            <ResponsiveContainer width="100%" height={380}>
-              <LineChart data={chartData} margin={{ top: 8, right: 24, left: 8, bottom: 8 }}>
-                <CartesianGrid stroke={colors.grid} />
-                <XAxis
-                  dataKey="period"
-                  tick={{ fontSize: 12, fill: colors.axisText }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                />
-                <YAxis
-                  tick={{ fontSize: 12, fill: colors.axisText }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                  tickFormatter={(v: number) => pct(v)}
-                  width={48}
-                />
-                <Tooltip content={(props) => <CreditDepositTooltip {...props} />} />
-                <Legend content={(props) => <CreditDepositLegend {...props} />} />
-                <ReferenceLine y={100} stroke={colors.categorical[5]} strokeDasharray="6 4" />
-                {selected.map((name) => (
-                  <Line
-                    key={name}
-                    type="monotone"
-                    dataKey={name}
-                    stroke={colorMap[name]}
-                    strokeWidth={2}
-                    dot={{ r: 3, fill: colorMap[name], stroke: colors.surface, strokeWidth: 2 }}
-                    activeDot={{ r: 5, fill: colorMap[name], stroke: colors.surface, strokeWidth: 2 }}
-                    connectNulls
+          <ExpandableChart title="2 · Credit-Deposit Ratio" height={360} className="credit-deposit-ratio-chart">
+            {(h) => (
+              <ResponsiveContainer width="100%" height={h}>
+                <LineChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
+                  <CartesianGrid stroke={colors.grid} />
+                  <XAxis
+                    dataKey="period"
+                    tick={{ fontSize: 11, fill: colors.axisText }}
+                    axisLine={{ stroke: colors.grid }}
+                    tickLine={false}
+                    interval="preserveStartEnd"
+                    minTickGap={16}
                   />
-                ))}
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+                  <YAxis
+                    tick={(props: { y?: number | string; payload?: { value: number } }) => (
+                      <LeftAlignedYAxisTick {...props} fill={colors.axisText} />
+                    )}
+                    axisLine={{ stroke: colors.grid }}
+                    tickLine={false}
+                    tickFormatter={(v: number) => pct(v)}
+                    width={40}
+                  />
+                  <Tooltip
+                    content={(props) => <CreditDepositTooltip {...props} />}
+                    cursor={{ stroke: colors.axisText, strokeDasharray: '3 3' }}
+                  />
+                  <ReferenceLine y={100} stroke={colors.categorical[5]} strokeDasharray="6 4" />
+                  {selected.map((name) => (
+                    <Line
+                      key={name}
+                      type="monotone"
+                      dataKey={name}
+                      stroke={colorMap[name]}
+                      strokeWidth={2}
+                      dot={{ r: 3, fill: colorMap[name], stroke: colors.surface, strokeWidth: 2 }}
+                      activeDot={{ r: 5, fill: colorMap[name], stroke: colors.surface, strokeWidth: 2 }}
+                      connectNulls
+                    />
+                  ))}
+                </LineChart>
+              </ResponsiveContainer>
+            )}
+          </ExpandableChart>
           <div className="credit-deposit-ratio-footnote">
             Dashed line marks 100% — above it, a state's banks lent out more than they collect in local
             deposits; below it, deposits exceed local lending.
@@ -254,6 +310,18 @@ const CreditDepositRatioChart: React.FC = () => {
     </div>
   );
 };
+
+// Left-aligned so every value starts flush at the card's left edge instead of
+// recharts' default right-aligned ticks, which ragged-left differently-lengthed values.
+const LeftAlignedYAxisTick: React.FC<{ y?: number | string; payload?: { value: number }; fill: string }> = ({
+  y,
+  payload,
+  fill,
+}) => (
+  <text x={4} y={y} dy={4} fontSize={11} fill={fill} textAnchor="start">
+    {pct(payload?.value ?? 0)}
+  </text>
+);
 
 const CreditDepositTooltip: React.FC<TooltipContentProps> = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) return null;
@@ -268,22 +336,6 @@ const CreditDepositTooltip: React.FC<TooltipContentProps> = ({ active, payload, 
           <span className="credit-deposit-ratio-tooltip-name">{String(entry.dataKey)}</span>
         </div>
       ))}
-    </div>
-  );
-};
-
-const CreditDepositLegend: React.FC<DefaultLegendContentProps> = ({ payload }) => {
-  if (!payload) return null;
-  return (
-    <div className="credit-deposit-ratio-legend">
-      {payload
-        .filter((entry) => typeof entry.dataKey === 'string')
-        .map((entry) => (
-          <span className="credit-deposit-ratio-legend-item" key={String(entry.dataKey)}>
-            <span className="credit-deposit-ratio-legend-dot" style={{ background: entry.color }} />
-            {entry.value}
-          </span>
-        ))}
     </div>
   );
 };

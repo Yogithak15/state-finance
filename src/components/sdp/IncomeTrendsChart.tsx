@@ -14,6 +14,7 @@ import { formatInrShort } from '../../utils/format';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
 import { SearchIcon } from '../icons';
+import { ExpandableChart } from '../ExpandableChart';
 import './IncomeTrendsChart.css';
 
 interface TrendRow {
@@ -252,46 +253,48 @@ const IncomeTrendsChart: React.FC = () => {
       )}
 
       {!error && selected.length > 0 && (
-        <div className="income-trends-chart">
-          <ResponsiveContainer width="100%" height={360}>
-            <LineChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
-              <CartesianGrid stroke={colors.grid} />
-              <XAxis
-                dataKey="period"
-                tick={{ fontSize: 11, fill: colors.axisText }}
-                axisLine={{ stroke: colors.grid }}
-                tickLine={false}
-                interval="preserveStartEnd"
-                minTickGap={16}
-              />
-              <YAxis
-                tick={(props: { y?: number | string; payload?: { value: number } }) => (
-                  <LeftAlignedYAxisTick {...props} fill={colors.axisText} />
-                )}
-                axisLine={{ stroke: colors.grid }}
-                tickLine={false}
-                tickFormatter={(v: number) => formatInrShort(v)}
-                width={44}
-              />
-              <Tooltip
-                content={(props) => <IncomeTrendsTooltip {...props} />}
-                cursor={{ stroke: colors.axisText, strokeDasharray: '3 3' }}
-              />
-              {selected.map((name) => (
-                <Line
-                  key={name}
-                  type="monotone"
-                  dataKey={name}
-                  stroke={colorMap[name]}
-                  strokeWidth={2}
-                  dot={{ r: 3, fill: colorMap[name], stroke: colors.surface, strokeWidth: 2 }}
-                  activeDot={{ r: 5, fill: colorMap[name], stroke: colors.surface, strokeWidth: 2 }}
-                  connectNulls
+        <ExpandableChart title="1 · Income Trends over Time" height={360} className="income-trends-chart">
+          {(h) => (
+            <ResponsiveContainer width="100%" height={h}>
+              <LineChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
+                <CartesianGrid stroke={colors.grid} />
+                <XAxis
+                  dataKey="period"
+                  tick={{ fontSize: 11, fill: colors.axisText }}
+                  axisLine={{ stroke: colors.grid }}
+                  tickLine={false}
+                  interval="preserveStartEnd"
+                  minTickGap={16}
                 />
-              ))}
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+                <YAxis
+                  tick={(props: { y?: number | string; payload?: { value: number } }) => (
+                    <LeftAlignedYAxisTick {...props} fill={colors.axisText} />
+                  )}
+                  axisLine={{ stroke: colors.grid }}
+                  tickLine={false}
+                  tickFormatter={(v: number) => formatInrShort(v)}
+                  width={44}
+                />
+                <Tooltip
+                  content={(props) => <IncomeTrendsTooltip {...props} />}
+                  cursor={{ stroke: colors.axisText, strokeDasharray: '3 3' }}
+                />
+                {selected.map((name) => (
+                  <Line
+                    key={name}
+                    type="monotone"
+                    dataKey={name}
+                    stroke={colorMap[name]}
+                    strokeWidth={2}
+                    dot={{ r: 3, fill: colorMap[name], stroke: colors.surface, strokeWidth: 2 }}
+                    activeDot={{ r: 5, fill: colorMap[name], stroke: colors.surface, strokeWidth: 2 }}
+                    connectNulls
+                  />
+                ))}
+              </LineChart>
+            </ResponsiveContainer>
+          )}
+        </ExpandableChart>
       )}
     </div>
   );

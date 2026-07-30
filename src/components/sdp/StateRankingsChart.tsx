@@ -16,6 +16,7 @@ import { formatInrShort } from '../../utils/format';
 import { rankColor } from '../../utils/rankColor';
 import { useTheme, ThemeMode } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
+import { ExpandableChart } from '../ExpandableChart';
 import './StateRankingsChart.css';
 
 interface MetricRow {
@@ -157,48 +158,54 @@ const StateRankingsChart: React.FC = () => {
 
       {!error && !loading && displayRows.length > 0 && (
         <>
-          <div className="state-rankings-chart" style={{ height: Math.max(displayRows.length * 32, 120) }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={displayRows}
-                layout="vertical"
-                margin={{ top: 4, right: 70, left: 8, bottom: 4 }}
-                barCategoryGap={6}
-              >
-                <CartesianGrid stroke={colors.grid} horizontal={false} />
-                <XAxis
-                  type="number"
-                  tick={{ fontSize: 12, fill: colors.axisText }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                  tickFormatter={(v: number) => formatInrShort(v)}
-                />
-                <YAxis
-                  type="category"
-                  dataKey="dimension_name"
-                  tick={{ fontSize: 12.5, fill: colors.ink }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                  width={110}
-                />
-                <Tooltip
-                  cursor={false}
-                  content={(props) => <StateRankingsTooltip {...props} rows={displayRows} theme={theme} />}
-                />
-                <Bar dataKey="value" radius={2} maxBarSize={22} activeBar={{ stroke: 'transparent' }}>
-                  {displayRows.map((row, index) => (
-                    <Cell key={row.dimension_id} fill={rankColor(index, displayRows.length, theme)} />
-                  ))}
-                  <LabelList
-                    dataKey="value"
-                    position="right"
-                    formatter={(v: React.ReactNode) => formatInrShort(Number(v))}
-                    style={{ fontSize: 11.5, fill: colors.axisText }}
+          <ExpandableChart
+            title="2 · State Rankings"
+            height={Math.max(displayRows.length * 32, 120)}
+            className="state-rankings-chart"
+          >
+            {(h) => (
+              <ResponsiveContainer width="100%" height={h}>
+                <BarChart
+                  data={displayRows}
+                  layout="vertical"
+                  margin={{ top: 4, right: 70, left: 8, bottom: 4 }}
+                  barCategoryGap={6}
+                >
+                  <CartesianGrid stroke={colors.grid} horizontal={false} />
+                  <XAxis
+                    type="number"
+                    tick={{ fontSize: 12, fill: colors.axisText }}
+                    axisLine={{ stroke: colors.grid }}
+                    tickLine={false}
+                    tickFormatter={(v: number) => formatInrShort(v)}
                   />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+                  <YAxis
+                    type="category"
+                    dataKey="dimension_name"
+                    tick={{ fontSize: 12.5, fill: colors.ink }}
+                    axisLine={{ stroke: colors.grid }}
+                    tickLine={false}
+                    width={110}
+                  />
+                  <Tooltip
+                    cursor={false}
+                    content={(props) => <StateRankingsTooltip {...props} rows={displayRows} theme={theme} />}
+                  />
+                  <Bar dataKey="value" radius={2} maxBarSize={22} activeBar={{ stroke: 'transparent' }}>
+                    {displayRows.map((row, index) => (
+                      <Cell key={row.dimension_id} fill={rankColor(index, displayRows.length, theme)} />
+                    ))}
+                    <LabelList
+                      dataKey="value"
+                      position="right"
+                      formatter={(v: React.ReactNode) => formatInrShort(Number(v))}
+                      style={{ fontSize: 11.5, fill: colors.axisText }}
+                    />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </ExpandableChart>
           <div className="state-rankings-footnote">
             {metricLabel} · {year} · {displayRows.length} of {yearRows.length} states/UTs with data shown
           </div>

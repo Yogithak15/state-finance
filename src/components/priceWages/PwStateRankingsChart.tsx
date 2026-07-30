@@ -15,6 +15,7 @@ import { fetchPwFinancialYearSeries, PW_METRICS } from '../../api/priceWagesApi'
 import { rankColor } from '../../utils/rankColor';
 import { useTheme, ThemeMode } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
+import { ExpandableChart } from '../ExpandableChart';
 import './PwStateRankingsChart.css';
 
 interface MetricRow {
@@ -135,8 +136,13 @@ const PwStateRankingsChart: React.FC = () => {
 
       {!error && !loading && displayRows.length > 0 && (
         <>
-          <div className="pw-rankings-chart" style={{ height: Math.max(displayRows.length * 32, 120) }}>
-            <ResponsiveContainer width="100%" height="100%">
+          <ExpandableChart
+            title="2 · State Rankings"
+            height={Math.max(displayRows.length * 32, 120)}
+            className="pw-rankings-chart"
+          >
+            {(h) => (
+            <ResponsiveContainer width="100%" height={h}>
               <BarChart
                 data={displayRows}
                 layout="vertical"
@@ -176,7 +182,8 @@ const PwStateRankingsChart: React.FC = () => {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-          </div>
+            )}
+          </ExpandableChart>
           <div className="pw-rankings-footnote">
             CPI (General) inflation · {year} · {displayRows.length} of {yearRows.length} states/UTs with data
             shown.

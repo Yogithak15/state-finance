@@ -14,6 +14,7 @@ import {
 import { fetchSdpFinancialYearSeries, SDP_METRICS } from '../../api/stateDomesticProductApi';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
+import { ExpandableChart } from '../ExpandableChart';
 import './EconomicWeightChart.css';
 
 interface MetricRow {
@@ -143,48 +144,50 @@ const EconomicWeightChart: React.FC = () => {
 
       {!error && !loading && chartData.length > 0 && (
         <>
-          <div className="economic-weight-chart">
-            <ResponsiveContainer width="100%" height={420}>
-              <AreaChart data={chartData} stackOffset="expand" margin={{ top: 8, right: 16, left: 8, bottom: 8 }}>
-                <CartesianGrid stroke={colors.grid} vertical={false} />
-                <XAxis
-                  dataKey="period"
-                  tick={{ fontSize: 12, fill: colors.axisText }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                />
-                <YAxis
-                  tick={{ fontSize: 12, fill: colors.axisText }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                  tickFormatter={(v: number) => `${Math.round(v * 100)}%`}
-                />
-                <Tooltip
-                  content={(props) => <EconomicWeightTooltip {...props} periodTotals={periodTotals} />}
-                />
-                <Legend content={(props) => <EconomicWeightLegend {...props} colorFor={colorFor} />} />
-                {top8.map((name) => (
-                  <Area
-                    key={name}
-                    type="monotone"
-                    dataKey={name}
-                    stackId="share"
-                    stroke={colorFor[name]}
-                    fill={colorFor[name]}
-                    fillOpacity={0.85}
+          <ExpandableChart title="4 · Economic Weight Shift" height={420} className="economic-weight-chart">
+            {(h) => (
+              <ResponsiveContainer width="100%" height={h}>
+                <AreaChart data={chartData} stackOffset="expand" margin={{ top: 8, right: 16, left: 8, bottom: 8 }}>
+                  <CartesianGrid stroke={colors.grid} vertical={false} />
+                  <XAxis
+                    dataKey="period"
+                    tick={{ fontSize: 12, fill: colors.axisText }}
+                    axisLine={{ stroke: colors.grid }}
+                    tickLine={false}
                   />
-                ))}
-                <Area
-                  type="monotone"
-                  dataKey={OTHER_KEY}
-                  stackId="share"
-                  stroke={OTHER_COLOR}
-                  fill={OTHER_COLOR}
-                  fillOpacity={0.6}
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+                  <YAxis
+                    tick={{ fontSize: 12, fill: colors.axisText }}
+                    axisLine={{ stroke: colors.grid }}
+                    tickLine={false}
+                    tickFormatter={(v: number) => `${Math.round(v * 100)}%`}
+                  />
+                  <Tooltip
+                    content={(props) => <EconomicWeightTooltip {...props} periodTotals={periodTotals} />}
+                  />
+                  <Legend content={(props) => <EconomicWeightLegend {...props} colorFor={colorFor} />} />
+                  {top8.map((name) => (
+                    <Area
+                      key={name}
+                      type="monotone"
+                      dataKey={name}
+                      stackId="share"
+                      stroke={colorFor[name]}
+                      fill={colorFor[name]}
+                      fillOpacity={0.85}
+                    />
+                  ))}
+                  <Area
+                    type="monotone"
+                    dataKey={OTHER_KEY}
+                    stackId="share"
+                    stroke={OTHER_COLOR}
+                    fill={OTHER_COLOR}
+                    fillOpacity={0.6}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
+          </ExpandableChart>
           <div className="economic-weight-footnote">
             Top {TOP_N} states by {cutoffPeriod} GSDP shown individually; everyone else grouped as "{OTHER_KEY}".
             Capped at {cutoffPeriod}, the latest year with complete state-wise reporting

@@ -170,4 +170,8 @@
     min-width: 0;
     width: 100%;
   }
+
+  .banking-penetration-show-toggle {
+    flex-wrap: wrap;
+  }
 }

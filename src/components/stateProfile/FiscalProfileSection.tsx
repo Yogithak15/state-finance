@@ -132,6 +132,7 @@ const FiscalProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={formatInrShort}
             colors={colors}
+            title="Deficits over time"
           />
         </ChartBlock>
         <ChartBlock title="Own-source revenue over time">
@@ -143,6 +144,7 @@ const FiscalProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={formatInrShort}
             colors={colors}
+            title="Own-source revenue over time"
           />
         </ChartBlock>
         <ChartBlock title="Expenditure over time">
@@ -156,6 +158,7 @@ const FiscalProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={formatInrShort}
             colors={colors}
+            title="Expenditure over time"
           />
         </ChartBlock>
         <ChartBlock title="Capital account over time">
@@ -168,6 +171,7 @@ const FiscalProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={formatInrShort}
             colors={colors}
+            title="Capital account over time"
           />
         </ChartBlock>
         <ChartBlock title="Debt & guarantees over time">
@@ -180,6 +184,7 @@ const FiscalProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={formatInrShort}
             colors={colors}
+            title="Debt & guarantees over time"
           />
         </ChartBlock>
       </ChartGrid>

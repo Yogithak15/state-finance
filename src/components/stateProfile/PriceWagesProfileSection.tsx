@@ -100,6 +100,7 @@ const PriceWagesProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={pct1}
             colors={colors}
+            title="Inflation by category (CPI, % YoY)"
           />
         </ChartBlock>
         <ChartBlock title="Rural daily wage rates (₹/day)">
@@ -113,6 +114,7 @@ const PriceWagesProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={formatInr}
             colors={colors}
+            title="Rural daily wage rates (₹/day)"
           />
         </ChartBlock>
       </ChartGrid>

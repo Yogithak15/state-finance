@@ -15,6 +15,7 @@ import { fetchPwFinancialYearSeries, PW_METRICS } from '../../api/priceWagesApi'
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
 import StateSearchSelect from '../sdp/StateSearchSelect';
+import { ExpandableChart } from '../ExpandableChart';
 import './InflationByCategoryChart.css';
 
 interface MetricRow {
@@ -119,8 +120,9 @@ const InflationByCategoryChart: React.FC = () => {
 
       {!error && !loading && chartData.length > 0 && (
         <>
-          <div className="inflation-category-chart">
-            <ResponsiveContainer width="100%" height={380}>
+          <ExpandableChart title="5 · Inflation by Category" height={380} className="inflation-category-chart">
+            {(h) => (
+            <ResponsiveContainer width="100%" height={h}>
               <LineChart data={chartData} margin={{ top: 8, right: 24, left: 8, bottom: 8 }}>
                 <CartesianGrid stroke={colors.grid} />
                 <XAxis
@@ -177,7 +179,8 @@ const InflationByCategoryChart: React.FC = () => {
                 />
               </LineChart>
             </ResponsiveContainer>
-          </div>
+            )}
+          </ExpandableChart>
           <div className="inflation-category-footnote">
             {selectedState}: General CPI inflation split into its three largest components. A blank
             segment means that category had no published figure for {selectedState} that year.

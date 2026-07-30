@@ -153,8 +153,13 @@
     gap: 10px;
   }
 
+  .fiscal-key-metrics-state {
+    width: 100%;
+  }
+
   .fiscal-key-metrics-state-select {
     min-width: 0;
+    flex: 1;
   }
 
   .fiscal-key-metrics-grid {

@@ -17,6 +17,7 @@ import { formatInrShort } from '../../utils/format';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS, RANK_GRADIENT } from '../../theme/chartColors';
 import StateSearchSelect from './StateSearchSelect';
+import { ExpandableChart } from '../ExpandableChart';
 import './RealVsNominalChart.css';
 
 interface MetricRow {
@@ -155,60 +156,62 @@ const RealVsNominalChart: React.FC = () => {
 
       {!error && !loading && chartData.length > 0 && (
         <>
-          <div className="real-vs-nominal-chart">
-            <ResponsiveContainer width="100%" height={380}>
-              <ComposedChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
-                <defs>
-                  <linearGradient id="realVsNominalGapGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={NOMINAL_COLOR} stopOpacity={0.55} />
-                    <stop offset="100%" stopColor={REAL_COLOR} stopOpacity={0.12} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid stroke={colors.grid} />
-                <XAxis
-                  dataKey="period"
-                  tick={{ fontSize: 11, fill: colors.axisText }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                  interval="preserveStartEnd"
-                  minTickGap={16}
-                />
-                <YAxis
-                  tick={{ fontSize: 11, fill: colors.axisText }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                  tickFormatter={(v: number) => formatInrShort(v)}
-                  width={56}
-                />
-                <Tooltip content={(props) => <RealVsNominalTooltip {...props} />} />
-                <Legend content={(props) => <RealVsNominalLegend {...props} />} />
-                <Area
-                  dataKey="gapRange"
-                  stroke="none"
-                  fill="url(#realVsNominalGapGradient)"
-                  isAnimationActive={false}
-                  legendType="none"
-                  tooltipType="none"
-                />
-                <Line
-                  type="monotone"
-                  dataKey="constant"
-                  name="Constant prices (real)"
-                  stroke={REAL_COLOR}
-                  strokeWidth={2}
-                  dot={{ r: 3, fill: REAL_COLOR, stroke: colors.surface, strokeWidth: 1.5 }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="current"
-                  name="Current prices (nominal)"
-                  stroke={NOMINAL_COLOR}
-                  strokeWidth={2}
-                  dot={{ r: 3, fill: NOMINAL_COLOR, stroke: colors.surface, strokeWidth: 1.5 }}
-                />
-              </ComposedChart>
-            </ResponsiveContainer>
-          </div>
+          <ExpandableChart title="5 · Real vs Nominal Gap" height={380} className="real-vs-nominal-chart">
+            {(h) => (
+              <ResponsiveContainer width="100%" height={h}>
+                <ComposedChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
+                  <defs>
+                    <linearGradient id="realVsNominalGapGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={NOMINAL_COLOR} stopOpacity={0.55} />
+                      <stop offset="100%" stopColor={REAL_COLOR} stopOpacity={0.12} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid stroke={colors.grid} />
+                  <XAxis
+                    dataKey="period"
+                    tick={{ fontSize: 11, fill: colors.axisText }}
+                    axisLine={{ stroke: colors.grid }}
+                    tickLine={false}
+                    interval="preserveStartEnd"
+                    minTickGap={16}
+                  />
+                  <YAxis
+                    tick={{ fontSize: 11, fill: colors.axisText }}
+                    axisLine={{ stroke: colors.grid }}
+                    tickLine={false}
+                    tickFormatter={(v: number) => formatInrShort(v)}
+                    width={56}
+                  />
+                  <Tooltip content={(props) => <RealVsNominalTooltip {...props} />} />
+                  <Legend content={(props) => <RealVsNominalLegend {...props} />} />
+                  <Area
+                    dataKey="gapRange"
+                    stroke="none"
+                    fill="url(#realVsNominalGapGradient)"
+                    isAnimationActive={false}
+                    legendType="none"
+                    tooltipType="none"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="constant"
+                    name="Constant prices (real)"
+                    stroke={REAL_COLOR}
+                    strokeWidth={2}
+                    dot={{ r: 3, fill: REAL_COLOR, stroke: colors.surface, strokeWidth: 1.5 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="current"
+                    name="Current prices (nominal)"
+                    stroke={NOMINAL_COLOR}
+                    strokeWidth={2}
+                    dot={{ r: 3, fill: NOMINAL_COLOR, stroke: colors.surface, strokeWidth: 1.5 }}
+                  />
+                </ComposedChart>
+              </ResponsiveContainer>
+            )}
+          </ExpandableChart>
           <div className="real-vs-nominal-footnote">
             {selectedState}: average gap between nominal and real {aggregateLabel} across available years ≈{' '}
             {avgGapPct !== null ? `${avgGapPct.toFixed(1)}%` : '—'} — a rough proxy for cumulative

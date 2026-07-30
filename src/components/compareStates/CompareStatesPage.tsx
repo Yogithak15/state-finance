@@ -272,6 +272,7 @@ const CompareStatesPage: React.FC = () => {
             height={360}
             colors={colors}
             showLegend={false}
+            title={`${metric.label} — state comparison`}
           />
         </div>
       )}

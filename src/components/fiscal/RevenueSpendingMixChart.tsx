@@ -14,6 +14,7 @@ import {
 import { fetchFiscalFinancialYearSeries, FISCAL_METRICS } from '../../api/fiscalApi';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
+import { ExpandableChart } from '../ExpandableChart';
 import './RevenueSpendingMixChart.css';
 
 interface MetricRow {
@@ -207,38 +208,40 @@ const RevenueSpendingMixChart: React.FC = () => {
 
       {!error && !loading && chartData.length > 0 && (
         <>
-          <div className="revenue-spending-mix-chart">
-            <ResponsiveContainer width="100%" height={420}>
-              <AreaChart data={chartData} stackOffset="expand" margin={{ top: 8, right: 16, left: 8, bottom: 8 }}>
-                <CartesianGrid stroke={colors.grid} vertical={false} />
-                <XAxis
-                  dataKey="period"
-                  tick={{ fontSize: 12, fill: colors.axisText }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                />
-                <YAxis
-                  tick={{ fontSize: 12, fill: colors.axisText }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                  tickFormatter={(v: number) => `${Math.round(v * 100)}%`}
-                />
-                <Tooltip content={(props) => <RevenueSpendingTooltip {...props} />} />
-                <Legend content={(props) => <RevenueSpendingLegend {...props} />} />
-                {seriesKeys.map((key) => (
-                  <Area
-                    key={key}
-                    type="monotone"
-                    dataKey={key}
-                    stackId="mix"
-                    stroke={seriesColors[key as keyof typeof seriesColors]}
-                    fill={seriesColors[key as keyof typeof seriesColors]}
-                    fillOpacity={0.85}
+          <ExpandableChart title="4 · Revenue & Spending Mix" height={420} className="revenue-spending-mix-chart">
+            {(h) => (
+              <ResponsiveContainer width="100%" height={h}>
+                <AreaChart data={chartData} stackOffset="expand" margin={{ top: 8, right: 16, left: 8, bottom: 8 }}>
+                  <CartesianGrid stroke={colors.grid} vertical={false} />
+                  <XAxis
+                    dataKey="period"
+                    tick={{ fontSize: 12, fill: colors.axisText }}
+                    axisLine={{ stroke: colors.grid }}
+                    tickLine={false}
                   />
-                ))}
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+                  <YAxis
+                    tick={{ fontSize: 12, fill: colors.axisText }}
+                    axisLine={{ stroke: colors.grid }}
+                    tickLine={false}
+                    tickFormatter={(v: number) => `${Math.round(v * 100)}%`}
+                  />
+                  <Tooltip content={(props) => <RevenueSpendingTooltip {...props} />} />
+                  <Legend content={(props) => <RevenueSpendingLegend {...props} />} />
+                  {seriesKeys.map((key) => (
+                    <Area
+                      key={key}
+                      type="monotone"
+                      dataKey={key}
+                      stackId="mix"
+                      stroke={seriesColors[key as keyof typeof seriesColors]}
+                      fill={seriesColors[key as keyof typeof seriesColors]}
+                      fillOpacity={0.85}
+                    />
+                  ))}
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
+          </ExpandableChart>
           <div className="revenue-spending-mix-footnote">
             {selectedState}:{' '}
             {view === 'revenue'

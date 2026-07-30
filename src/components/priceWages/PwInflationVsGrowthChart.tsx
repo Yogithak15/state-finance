@@ -19,6 +19,7 @@ import { RBI_TARGET_CENTER } from '../../utils/bandColor';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
 import { Region, REGION_MAP, REGION_ORDER } from '../../utils/regionMap';
+import { ExpandableChart } from '../ExpandableChart';
 import './PwInflationVsGrowthChart.css';
 
 interface MetricRow {
@@ -197,8 +198,9 @@ const PwInflationVsGrowthChart: React.FC = () => {
         <>
           <div className="pw-inflation-growth-chart-row">
             <span className="pw-axis-title-y">Real per-capita growth, CAGR since {inflationYearRange.start}</span>
-            <div className="pw-inflation-growth-chart-plot">
-              <ResponsiveContainer width="100%" height={460}>
+            <ExpandableChart title="4 · Inflation vs Real Growth" height={460} className="pw-inflation-growth-chart-plot">
+              {(h) => (
+              <ResponsiveContainer width="100%" height={h}>
                 <ScatterChart margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
                   <CartesianGrid stroke={colors.grid} />
                   <XAxis
@@ -256,7 +258,8 @@ const PwInflationVsGrowthChart: React.FC = () => {
                   ))}
                 </ScatterChart>
               </ResponsiveContainer>
-            </div>
+              )}
+            </ExpandableChart>
           </div>
           <span className="pw-axis-title-x">
             Average CPI inflation, {inflationYearRange.start} to {inflationYearRange.end}

@@ -15,6 +15,7 @@ import { fetchSdpFinancialYearSeries, SDP_METRICS } from '../../api/stateDomesti
 import { rankColor } from '../../utils/rankColor';
 import { useTheme, ThemeMode } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
+import { ExpandableChart } from '../ExpandableChart';
 import './GrowthLeagueChart.css';
 
 interface MetricRow {
@@ -201,48 +202,54 @@ const GrowthLeagueChart: React.FC = () => {
       )}
 
       {!error && !loading && growthRows.length > 0 && (
-        <div className="growth-league-chart" style={{ height: Math.max(growthRows.length * 26, 120) }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={growthRows}
-              layout="vertical"
-              margin={{ top: 4, right: 60, left: 8, bottom: 4 }}
-              barCategoryGap={4}
-            >
-              <CartesianGrid stroke={colors.grid} horizontal={false} />
-              <XAxis
-                type="number"
-                tick={{ fontSize: 12, fill: colors.axisText }}
-                axisLine={{ stroke: colors.grid }}
-                tickLine={false}
-                tickFormatter={(v: number) => formatPct(v)}
-              />
-              <YAxis
-                type="category"
-                dataKey="displayLabel"
-                tick={{ fontSize: 12, fill: colors.ink }}
-                axisLine={{ stroke: colors.grid }}
-                tickLine={false}
-                width={150}
-              />
-              <Tooltip
-                cursor={false}
-                content={(props) => <GrowthLeagueTooltip {...props} rows={growthRows} theme={theme} />}
-              />
-              <Bar dataKey="cagr" radius={2} maxBarSize={18} activeBar={{ stroke: 'transparent' }}>
-                {growthRows.map((row, index) => (
-                  <Cell key={row.dimensionId} fill={rankColor(index, growthRows.length, theme)} />
-                ))}
-                <LabelList
-                  dataKey="cagr"
-                  position="right"
-                  formatter={(v: React.ReactNode) => formatPct(Number(v))}
-                  style={{ fontSize: 11, fill: colors.axisText }}
+        <ExpandableChart
+          title="3 · Growth League Table"
+          height={Math.max(growthRows.length * 26, 120)}
+          className="growth-league-chart"
+        >
+          {(h) => (
+            <ResponsiveContainer width="100%" height={h}>
+              <BarChart
+                data={growthRows}
+                layout="vertical"
+                margin={{ top: 4, right: 60, left: 8, bottom: 4 }}
+                barCategoryGap={4}
+              >
+                <CartesianGrid stroke={colors.grid} horizontal={false} />
+                <XAxis
+                  type="number"
+                  tick={{ fontSize: 12, fill: colors.axisText }}
+                  axisLine={{ stroke: colors.grid }}
+                  tickLine={false}
+                  tickFormatter={(v: number) => formatPct(v)}
                 />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+                <YAxis
+                  type="category"
+                  dataKey="displayLabel"
+                  tick={{ fontSize: 12, fill: colors.ink }}
+                  axisLine={{ stroke: colors.grid }}
+                  tickLine={false}
+                  width={150}
+                />
+                <Tooltip
+                  cursor={false}
+                  content={(props) => <GrowthLeagueTooltip {...props} rows={growthRows} theme={theme} />}
+                />
+                <Bar dataKey="cagr" radius={2} maxBarSize={18} activeBar={{ stroke: 'transparent' }}>
+                  {growthRows.map((row, index) => (
+                    <Cell key={row.dimensionId} fill={rankColor(index, growthRows.length, theme)} />
+                  ))}
+                  <LabelList
+                    dataKey="cagr"
+                    position="right"
+                    formatter={(v: React.ReactNode) => formatPct(Number(v))}
+                    style={{ fontSize: 11, fill: colors.axisText }}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </ExpandableChart>
       )}
 
       {!error && !loading && growthRows.some((r) => r.approximate) && (

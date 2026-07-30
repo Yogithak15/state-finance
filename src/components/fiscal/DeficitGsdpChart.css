@@ -14,69 +14,170 @@
 }
 
 .deficit-gsdp-desc {
-  margin: 0 0 20px;
+  margin: 0 0 18px;
   font-size: 13.5px;
   line-height: 1.5;
   color: var(--color-text-muted);
 }
 
-.deficit-gsdp-control-group {
-  margin-bottom: 18px;
-}
-
-.deficit-gsdp-control-header {
+/* Control row — compact measure toggle + add-state search, side by side */
+.deficit-gsdp-controls {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
-.deficit-gsdp-control-label {
-  display: block;
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
-  margin-bottom: 8px;
-}
-
+/* Compact segmented control — a secondary setting, not a primary nav element */
 .deficit-gsdp-measure-toggle {
   display: inline-flex;
-  gap: 8px;
+  flex-shrink: 0;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  padding: 2px;
+  gap: 2px;
 }
 
 .deficit-gsdp-measure-option {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 7px 14px;
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 5px 12px;
   border-radius: 999px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--color-text-muted);
   cursor: pointer;
-}
-
-.deficit-gsdp-measure-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  border: 1.5px solid var(--color-border);
-  background: var(--color-surface);
-  flex-shrink: 0;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .deficit-gsdp-measure-option.active {
-  color: var(--color-text);
+  background: var(--color-accent);
+  color: #ffffff;
+}
+
+/* Add-state search + dropdown */
+.deficit-gsdp-state-picker {
+  position: relative;
+  flex: 1 1 240px;
+  min-width: 200px;
+}
+
+.deficit-gsdp-state-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.deficit-gsdp-state-input-wrap:focus-within {
   border-color: var(--color-accent);
 }
 
-.deficit-gsdp-measure-option.active .deficit-gsdp-measure-dot {
-  border-color: var(--color-accent);
-  background: var(--color-accent);
-  box-shadow: inset 0 0 0 3px var(--color-surface);
+.deficit-gsdp-search-icon {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.deficit-gsdp-state-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 13px;
+  color: var(--color-text);
+}
+
+.deficit-gsdp-state-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.deficit-gsdp-state-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  border-radius: 10px;
+  padding: 6px;
+  z-index: 20;
+}
+
+.deficit-gsdp-state-option {
+  display: block;
+  width: 100%;
+  appearance: none;
+  border: none;
+  background: none;
+  text-align: left;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.deficit-gsdp-state-option:hover {
+  background: var(--color-bg);
+}
+
+.deficit-gsdp-state-dropdown-empty {
+  display: block;
+  padding: 8px 10px;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+/* Selected-state chips, colored to match their chart line */
+.deficit-gsdp-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.deficit-gsdp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px 5px 12px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.deficit-gsdp-chip-remove {
+  appearance: none;
+  border: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.deficit-gsdp-chip-remove:hover {
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .deficit-gsdp-clear-all-link {
@@ -92,57 +193,6 @@
 
 .deficit-gsdp-clear-all-link:hover {
   text-decoration: underline;
-}
-
-/* State search + pills */
-.deficit-gsdp-state-search-input {
-  width: 100%;
-  max-width: 420px;
-  padding: 9px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  font-size: 13.5px;
-  color: var(--color-text);
-  margin-bottom: 12px;
-}
-
-.deficit-gsdp-state-search-input:focus {
-  outline: none;
-  border-color: var(--color-accent);
-}
-
-.deficit-gsdp-state-pill-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.deficit-gsdp-state-pill {
-  appearance: none;
-  border-radius: 999px;
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  padding: 6px 13px;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--color-text);
-  cursor: pointer;
-  transition: border-color 0.15s ease, background 0.15s ease;
-}
-
-.deficit-gsdp-state-pill:hover {
-  border-color: var(--color-accent);
-}
-
-.deficit-gsdp-state-pill.selected {
-  color: #ffffff;
-  font-weight: 600;
-}
-
-.deficit-gsdp-state-pill-empty {
-  font-size: 12.5px;
-  color: var(--color-text-muted);
 }
 
 /* Chart states */
@@ -210,31 +260,6 @@
   color: var(--color-text-muted);
 }
 
-/* Legend */
-.deficit-gsdp-legend {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 16px;
-  padding-top: 12px;
-}
-
-.deficit-gsdp-legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--color-text);
-}
-
-.deficit-gsdp-legend-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
 .deficit-gsdp-footnote {
   margin-top: 12px;
   font-size: 12px;
@@ -244,11 +269,11 @@
 
 @media (max-width: 700px) {
   .deficit-gsdp {
-    padding: 18px 16px;
+    padding: 16px;
   }
 
   .deficit-gsdp-title {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .deficit-gsdp-desc {
@@ -259,7 +284,7 @@
     flex-wrap: wrap;
   }
 
-  .deficit-gsdp-state-search-input {
-    max-width: 100%;
+  .deficit-gsdp-state-picker {
+    flex-basis: 100%;
   }
 }

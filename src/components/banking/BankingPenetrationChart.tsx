@@ -16,6 +16,7 @@ import { fetchSdpFinancialYearSeries, SDP_METRICS } from '../../api/stateDomesti
 import { rankColor } from '../../utils/rankColor';
 import { useTheme, ThemeMode } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
+import { ExpandableChart } from '../ExpandableChart';
 import './BankingPenetrationChart.css';
 
 interface MetricRow {
@@ -180,47 +181,53 @@ const BankingPenetrationChart: React.FC = () => {
 
       {!error && !loading && displayRows.length > 0 && (
         <>
-          <div className="banking-penetration-chart" style={{ height: Math.max(displayRows.length * 32, 120) }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={displayRows}
-                layout="vertical"
-                margin={{ top: 4, right: 60, left: 8, bottom: 4 }}
-                barCategoryGap={6}
-              >
-                <CartesianGrid stroke={colors.grid} horizontal={false} />
-                <XAxis
-                  type="number"
-                  tick={{ fontSize: 12, fill: colors.axisText }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                />
-                <YAxis
-                  type="category"
-                  dataKey="state"
-                  tick={{ fontSize: 12.5, fill: colors.ink }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                  width={110}
-                />
-                <Tooltip
-                  cursor={false}
-                  content={(props) => <PenetrationTooltip {...props} rows={displayRows} theme={theme} />}
-                />
-                <Bar dataKey="perLakh" radius={2} maxBarSize={22} activeBar={{ stroke: 'transparent' }}>
-                  {displayRows.map((row, index) => (
-                    <Cell key={row.dimensionId} fill={rankColor(index, displayRows.length, theme)} />
-                  ))}
-                  <LabelList
-                    dataKey="perLakh"
-                    position="right"
-                    formatter={(v: React.ReactNode) => fmt(Number(v))}
-                    style={{ fontSize: 11.5, fill: colors.axisText }}
+          <ExpandableChart
+            title="5 · Banking Penetration"
+            height={Math.max(displayRows.length * 32, 120)}
+            className="banking-penetration-chart"
+          >
+            {(h) => (
+              <ResponsiveContainer width="100%" height={h}>
+                <BarChart
+                  data={displayRows}
+                  layout="vertical"
+                  margin={{ top: 4, right: 60, left: 8, bottom: 4 }}
+                  barCategoryGap={6}
+                >
+                  <CartesianGrid stroke={colors.grid} horizontal={false} />
+                  <XAxis
+                    type="number"
+                    tick={{ fontSize: 12, fill: colors.axisText }}
+                    axisLine={{ stroke: colors.grid }}
+                    tickLine={false}
                   />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+                  <YAxis
+                    type="category"
+                    dataKey="state"
+                    tick={{ fontSize: 12.5, fill: colors.ink }}
+                    axisLine={{ stroke: colors.grid }}
+                    tickLine={false}
+                    width={110}
+                  />
+                  <Tooltip
+                    cursor={false}
+                    content={(props) => <PenetrationTooltip {...props} rows={displayRows} theme={theme} />}
+                  />
+                  <Bar dataKey="perLakh" radius={2} maxBarSize={22} activeBar={{ stroke: 'transparent' }}>
+                    {displayRows.map((row, index) => (
+                      <Cell key={row.dimensionId} fill={rankColor(index, displayRows.length, theme)} />
+                    ))}
+                    <LabelList
+                      dataKey="perLakh"
+                      position="right"
+                      formatter={(v: React.ReactNode) => fmt(Number(v))}
+                      style={{ fontSize: 11.5, fill: colors.axisText }}
+                    />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </ExpandableChart>
           <div className="banking-penetration-footnote">
             SCB offices per lakh population, {year}.
             {excludedNames.length > 0 &&

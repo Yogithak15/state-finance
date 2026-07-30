@@ -19,6 +19,8 @@ import { fetchSdpFinancialYearSeries, SDP_METRICS } from '../../api/stateDomesti
 import { formatInrShort } from '../../utils/format';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
+import { SearchIcon } from '../icons';
+import { ExpandableChart } from '../ExpandableChart';
 import './DebtLiabilitiesChart.css';
 
 interface MetricRow {
@@ -185,9 +187,11 @@ const DebtLiabilitiesChart: React.FC = () => {
   const [ratioLoading, setRatioLoading] = useState(true);
   const [ratioError, setRatioError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [colorMap, setColorMap] = useState<Record<string, string>>({});
   const hasSetDefaultRef = useRef(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -232,10 +236,27 @@ const DebtLiabilitiesChart: React.FC = () => {
     [ratioRows]
   );
 
-  const filteredStates = useMemo(
-    () => allStates.filter((name) => name.toLowerCase().includes(search.trim().toLowerCase())),
-    [allStates, search]
+  const availableStates = useMemo(
+    () => allStates.filter((name) => !selected.includes(name)),
+    [allStates, selected]
   );
+
+  const filteredAvailableStates = useMemo(
+    () => availableStates.filter((name) => name.toLowerCase().includes(search.trim().toLowerCase())),
+    [availableStates, search]
+  );
+
+  // Close the add-state dropdown on an outside click.
+  useEffect(() => {
+    if (!pickerOpen) return undefined;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (pickerRef.current && !pickerRef.current.contains(e.target as Node)) {
+        setPickerOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [pickerOpen]);
 
   useEffect(() => {
     if (hasSetDefaultRef.current || ratioRows.length === 0) return;
@@ -286,6 +307,11 @@ const DebtLiabilitiesChart: React.FC = () => {
       });
       return [...prev, name];
     });
+  };
+
+  const addState = (name: string) => {
+    toggleState(name);
+    setSearch('');
   };
 
   const clearAll = () => {
@@ -374,44 +400,50 @@ const DebtLiabilitiesChart: React.FC = () => {
 
           {!compError && !compLoading && displayRows.length > 0 && (
             <>
-              <div className="debt-liabilities-chart" style={{ height: Math.max(displayRows.length * 32, 120) }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={displayRows}
-                    layout="vertical"
-                    margin={{ top: 4, right: 16, left: 8, bottom: 4 }}
-                    barCategoryGap={6}
-                  >
-                    <CartesianGrid stroke={colors.grid} horizontal={false} />
-                    <XAxis
-                      type="number"
-                      tick={{ fontSize: 12, fill: colors.axisText }}
-                      axisLine={{ stroke: colors.grid }}
-                      tickLine={false}
-                      tickFormatter={(v: number) => formatInrShort(v)}
-                    />
-                    <YAxis
-                      type="category"
-                      dataKey="state"
-                      tick={{ fontSize: 12.5, fill: colors.ink }}
-                      axisLine={{ stroke: colors.grid }}
-                      tickLine={false}
-                      width={110}
-                    />
-                    <Tooltip content={(props) => <CompositionTooltip {...props} />} />
-                    <Legend content={(props) => <CompositionLegend {...props} />} />
-                    {CATEGORY_KEYS.map((key) => (
-                      <Bar
-                        key={key}
-                        dataKey={key}
-                        stackId="debt"
-                        fill={categoryColors[key]}
-                        activeBar={{ stroke: 'transparent' }}
+              <ExpandableChart
+                title="5 · Debt & Liabilities — Composition by state"
+                height={Math.max(displayRows.length * 32, 120)}
+                className="debt-liabilities-chart"
+              >
+                {(h) => (
+                  <ResponsiveContainer width="100%" height={h}>
+                    <BarChart
+                      data={displayRows}
+                      layout="vertical"
+                      margin={{ top: 4, right: 16, left: 8, bottom: 4 }}
+                      barCategoryGap={6}
+                    >
+                      <CartesianGrid stroke={colors.grid} horizontal={false} />
+                      <XAxis
+                        type="number"
+                        tick={{ fontSize: 12, fill: colors.axisText }}
+                        axisLine={{ stroke: colors.grid }}
+                        tickLine={false}
+                        tickFormatter={(v: number) => formatInrShort(v)}
                       />
-                    ))}
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+                      <YAxis
+                        type="category"
+                        dataKey="state"
+                        tick={{ fontSize: 12.5, fill: colors.ink }}
+                        axisLine={{ stroke: colors.grid }}
+                        tickLine={false}
+                        width={110}
+                      />
+                      <Tooltip cursor={false} content={(props) => <CompositionTooltip {...props} />} />
+                      <Legend content={(props) => <CompositionLegend {...props} />} />
+                      {CATEGORY_KEYS.map((key) => (
+                        <Bar
+                          key={key}
+                          dataKey={key}
+                          stackId="debt"
+                          fill={categoryColors[key]}
+                          activeBar={{ stroke: 'transparent' }}
+                        />
+                      ))}
+                    </BarChart>
+                  </ResponsiveContainer>
+                )}
+              </ExpandableChart>
               <div className="debt-liabilities-footnote">
                 {year} · sorted by total outstanding liabilities, largest first. {displayRows.length} of{' '}
                 {compositionRows.length} states/UTs with data shown. "Other" captures Ways &amp; Means Advances
@@ -429,98 +461,136 @@ const DebtLiabilitiesChart: React.FC = () => {
             ratio the N.K. Singh FRBM Review Committee benchmarked states against.
           </p>
 
-          <div className="debt-liabilities-control-group">
-            <div className="debt-liabilities-control-header">
-              <span className="debt-liabilities-control-label">Search States</span>
-              {selected.length > 0 && (
-                <button type="button" className="debt-liabilities-clear-all-link" onClick={clearAll}>
-                  clear all
-                </button>
-              )}
+          <div className="debt-liabilities-state-picker" ref={pickerRef}>
+            <div className="debt-liabilities-state-input-wrap">
+              <SearchIcon width={14} height={14} className="debt-liabilities-search-icon" />
+              <input
+                type="text"
+                className="debt-liabilities-state-input"
+                placeholder="Add a state to compare…"
+                value={search}
+                onFocus={() => setPickerOpen(true)}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setPickerOpen(true);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && filteredAvailableStates.length > 0) {
+                    e.preventDefault();
+                    addState(filteredAvailableStates[0]);
+                  }
+                }}
+              />
             </div>
-            <input
-              type="text"
-              className="debt-liabilities-state-search-input"
-              placeholder="Type to filter…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <div className="debt-liabilities-state-pill-grid">
-              {filteredStates.map((name) => {
-                const isSelected = selected.includes(name);
-                return (
+            {pickerOpen && (
+              <div className="debt-liabilities-state-dropdown">
+                {filteredAvailableStates.map((name) => (
                   <button
                     key={name}
                     type="button"
-                    className={`debt-liabilities-state-pill${isSelected ? ' selected' : ''}`}
-                    style={isSelected ? { background: colorMap[name], borderColor: colorMap[name] } : undefined}
-                    onClick={() => toggleState(name)}
+                    className="debt-liabilities-state-option"
+                    onClick={() => addState(name)}
                   >
                     {name}
                   </button>
-                );
-              })}
-              {!ratioLoading && filteredStates.length === 0 && (
-                <span className="debt-liabilities-state-pill-empty">No states match "{search}".</span>
-              )}
-            </div>
+                ))}
+                {filteredAvailableStates.length === 0 && (
+                  <span className="debt-liabilities-state-dropdown-empty">
+                    {availableStates.length === 0 ? 'All states added.' : `No states match “${search}”.`}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
+
+          {selected.length > 0 && (
+            <div className="debt-liabilities-chips-row">
+              {selected.map((name) => (
+                <span key={name} className="debt-liabilities-chip" style={{ background: colorMap[name] }}>
+                  {name}
+                  <button
+                    type="button"
+                    className="debt-liabilities-chip-remove"
+                    onClick={() => toggleState(name)}
+                    aria-label={`Remove ${name}`}
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              <button type="button" className="debt-liabilities-clear-all-link" onClick={clearAll}>
+                clear all
+              </button>
+            </div>
+          )}
 
           {ratioError && <div className="debt-liabilities-error">{ratioError}</div>}
 
           {!ratioError && selected.length === 0 && (
             <div className="debt-liabilities-empty">
-              {ratioLoading ? 'Loading states…' : 'Select one or more states above to see their debt ÷ GSDP trend.'}
+              {ratioLoading ? 'Loading states…' : 'Add a state above to see its debt ÷ GSDP trend.'}
             </div>
           )}
 
           {!ratioError && selected.length > 0 && (
             <>
-              <div className="debt-liabilities-chart">
-                <ResponsiveContainer width="100%" height={380}>
-                  <LineChart data={ratioChartData} margin={{ top: 8, right: 24, left: 8, bottom: 8 }}>
-                    <CartesianGrid stroke={colors.grid} />
-                    <XAxis
-                      dataKey="period"
-                      tick={{ fontSize: 12, fill: colors.axisText }}
-                      axisLine={{ stroke: colors.grid }}
-                      tickLine={false}
-                    />
-                    <YAxis
-                      tick={{ fontSize: 12, fill: colors.axisText }}
-                      axisLine={{ stroke: colors.grid }}
-                      tickLine={false}
-                      tickFormatter={(v: number) => pct(v)}
-                      width={48}
-                    />
-                    <Tooltip content={(props) => <RatioTooltip {...props} />} />
-                    <Legend content={(props) => <RatioLegend {...props} />} />
-                    <ReferenceLine
-                      y={DEBT_GSDP_SUGGESTED_CEILING}
-                      stroke={colors.categorical[5]}
-                      strokeDasharray="6 4"
-                      label={{
-                        value: `~${DEBT_GSDP_SUGGESTED_CEILING}% suggested ceiling`,
-                        position: 'insideBottomLeft',
-                        fill: colors.categorical[5],
-                        fontSize: 11,
-                      }}
-                    />
-                    {selected.map((name) => (
-                      <Line
-                        key={name}
-                        type="monotone"
-                        dataKey={name}
-                        stroke={colorMap[name]}
-                        strokeWidth={2}
-                        dot={{ r: 3, fill: colorMap[name], stroke: colors.surface, strokeWidth: 2 }}
-                        activeDot={{ r: 5, fill: colorMap[name], stroke: colors.surface, strokeWidth: 2 }}
-                        connectNulls
+              <ExpandableChart
+                title="5 · Debt & Liabilities — Debt ÷ GSDP"
+                height={360}
+                className="debt-liabilities-chart"
+              >
+                {(h) => (
+                  <ResponsiveContainer width="100%" height={h}>
+                    <LineChart data={ratioChartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
+                      <CartesianGrid stroke={colors.grid} />
+                      <XAxis
+                        dataKey="period"
+                        tick={{ fontSize: 11, fill: colors.axisText }}
+                        axisLine={{ stroke: colors.grid }}
+                        tickLine={false}
+                        interval="preserveStartEnd"
+                        minTickGap={16}
                       />
-                    ))}
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
+                      <YAxis
+                        tick={(props: { y?: number | string; payload?: { value: number } }) => (
+                          <LeftAlignedYAxisTick {...props} fill={colors.axisText} />
+                        )}
+                        axisLine={{ stroke: colors.grid }}
+                        tickLine={false}
+                        tickFormatter={(v: number) => pct(v)}
+                        width={40}
+                      />
+                      <Tooltip
+                        content={(props) => <RatioTooltip {...props} />}
+                        cursor={{ stroke: colors.axisText, strokeDasharray: '3 3' }}
+                      />
+                      <ReferenceLine
+                        y={DEBT_GSDP_SUGGESTED_CEILING}
+                        stroke={colors.categorical[5]}
+                        strokeDasharray="6 4"
+                        label={{
+                          value: `~${DEBT_GSDP_SUGGESTED_CEILING}% suggested ceiling`,
+                          position: 'insideBottomLeft',
+                          fill: colors.categorical[5],
+                          fontSize: 11,
+                        }}
+                      />
+                      {selected.map((name) => (
+                        <Line
+                          key={name}
+                          type="monotone"
+                          dataKey={name}
+                          stroke={colorMap[name]}
+                          strokeWidth={2}
+                          dot={{ r: 3, fill: colorMap[name], stroke: colors.surface, strokeWidth: 2 }}
+                          activeDot={{ r: 5, fill: colorMap[name], stroke: colors.surface, strokeWidth: 2 }}
+                          connectNulls
+                        />
+                      ))}
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
+              </ExpandableChart>
               <div className="debt-liabilities-footnote">
                 Dashed line marks the N.K. Singh FRBM Review Committee's suggested ~{DEBT_GSDP_SUGGESTED_CEILING}%-of-GSDP
                 debt ceiling. Ratio computed only for {yearRange.start} to {yearRange.end}, where GSDP data is
@@ -588,20 +658,16 @@ const RatioTooltip: React.FC<TooltipContentProps> = ({ active, payload, label })
   );
 };
 
-const RatioLegend: React.FC<DefaultLegendContentProps> = ({ payload }) => {
-  if (!payload) return null;
-  return (
-    <div className="debt-liabilities-legend">
-      {payload
-        .filter((entry) => typeof entry.dataKey === 'string')
-        .map((entry) => (
-          <span className="debt-liabilities-legend-item" key={String(entry.dataKey)}>
-            <span className="debt-liabilities-legend-dot" style={{ background: entry.color }} />
-            {entry.value}
-          </span>
-        ))}
-    </div>
-  );
-};
+// Left-aligned so every value starts flush at the card's left edge instead of
+// recharts' default right-aligned ticks, which ragged-left differently-lengthed values.
+const LeftAlignedYAxisTick: React.FC<{ y?: number | string; payload?: { value: number }; fill: string }> = ({
+  y,
+  payload,
+  fill,
+}) => (
+  <text x={4} y={y} dy={4} fontSize={11} fill={fill} textAnchor="start">
+    {pct(payload?.value ?? 0)}
+  </text>
+);
 
 export default DebtLiabilitiesChart;

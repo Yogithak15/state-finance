@@ -37,8 +37,20 @@ export const SDP_METRICS = {
   nsdpConstant: 204,
 };
 
+// Dadra & Nagar Haveli (54317) and Daman & Diu (54318) merged into a single
+// UT in Jan 2020 ("Dadra & Nagar Haveli And Daman & Diu", dimension_id
+// 54314). The backend dimension table still carries both pre-merger entries
+// alongside the correct merged one, inflating the true count of 36 (28
+// states + 8 UTs) to 38 wherever a dimension list is used — excluded here so
+// every "states/UTs tracked" count and state picker across the app reflects
+// the real 36.
+const LEGACY_DIMENSION_IDS = new Set([54317, 54318]);
+
 // ── All state/UT dimension IDs under dimension_type_id 72 ───────────────────
-export const fetchSdpStateDimensions = () => getAllDimensions(SDP_DIMENSION_TYPE_ID);
+export const fetchSdpStateDimensions = async () => {
+  const dims = await getAllDimensions(SDP_DIMENSION_TYPE_ID);
+  return dims.filter((d) => !LEGACY_DIMENSION_IDS.has(d.dimension_id ?? d.id));
+};
 
 // ── Metric metadata (name/description/currency) straight from the API ───────
 //   Used so display copy (e.g. "current prices" vs "constant prices") comes

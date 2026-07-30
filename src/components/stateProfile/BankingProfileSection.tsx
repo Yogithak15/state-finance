@@ -128,6 +128,7 @@ const BankingProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={formatInrShort}
             colors={colors}
+            title="SCB deposits & credit over time"
           />
         </ChartBlock>
         <ChartBlock title="Credit-deposit ratios over time (%)">
@@ -140,6 +141,7 @@ const BankingProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={pct1}
             colors={colors}
+            title="Credit-deposit ratios over time (%)"
           />
         </ChartBlock>
         <ChartBlock title="Sectoral SCB credit over time">
@@ -152,6 +154,7 @@ const BankingProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={formatInrShort}
             colors={colors}
+            title="Sectoral SCB credit over time"
           />
         </ChartBlock>
         <ChartBlock title="RRB deposits & credit over time">
@@ -163,6 +166,7 @@ const BankingProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={formatInrShort}
             colors={colors}
+            title="RRB deposits & credit over time"
           />
         </ChartBlock>
       </ChartGrid>

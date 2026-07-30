@@ -19,6 +19,7 @@ import { formatInr } from '../../utils/format';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
 import { Region, REGION_MAP, REGION_ORDER } from '../../utils/regionMap';
+import { ExpandableChart } from '../ExpandableChart';
 import './GrowthVsProsperityChart.css';
 
 interface MetricRow {
@@ -180,81 +181,89 @@ const GrowthVsProsperityChart: React.FC = () => {
             <div className="growth-vs-prosperity-chart-row">
               <span className="axis-title-y">Real per-capita growth, full period (CAGR %)</span>
 
-              <div className="growth-vs-prosperity-chart-plot">
-                <span className="quadrant-label quadrant-top-right">Rich &amp; accelerating</span>
-                <span className="quadrant-label quadrant-bottom-right">Rich, but slowing</span>
-                <span className="quadrant-label quadrant-top-left">Poor, but catching up</span>
-                <span className="quadrant-label quadrant-bottom-left">Poor, falling behind</span>
+              <ExpandableChart
+                title="7 · Growth vs Prosperity"
+                height={460}
+                className="growth-vs-prosperity-chart-plot"
+              >
+                {(h) => (
+                  <>
+                    <span className="quadrant-label quadrant-top-right">Rich &amp; accelerating</span>
+                    <span className="quadrant-label quadrant-bottom-right">Rich, but slowing</span>
+                    <span className="quadrant-label quadrant-top-left">Poor, but catching up</span>
+                    <span className="quadrant-label quadrant-bottom-left">Poor, falling behind</span>
 
-                <ResponsiveContainer width="100%" height={460}>
-                  <ScatterChart margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
-                    <CartesianGrid stroke={colors.grid} />
-                    <XAxis
-                      type="number"
-                      dataKey="perCapita"
-                      name="Per-capita NSDP"
-                      tick={{ fontSize: 12, fill: colors.axisText }}
-                      axisLine={{ stroke: colors.grid }}
-                      tickLine={false}
-                      tickFormatter={(v: number) => formatInr(v)}
-                    />
-                    <YAxis
-                      type="number"
-                      dataKey="cagr"
-                      name="Real per-capita growth"
-                      tick={{ fontSize: 12, fill: colors.axisText }}
-                      axisLine={{ stroke: colors.grid }}
-                      tickLine={false}
-                      tickFormatter={(v: number) => `${v.toFixed(0)}%`}
-                      width={56}
-                    />
-                    <ZAxis type="number" dataKey="scale" range={[120, 1800]} domain={scaleDomain} />
-                    <Tooltip
-                      content={(props) => <GrowthVsProsperityTooltip {...props} regionColors={regionColors} muted={colors.muted} />}
-                      cursor={{ strokeDasharray: '3 3' }}
-                    />
-                    <Legend verticalAlign="bottom" content={(props) => <GrowthVsProsperityLegend {...props} />} />
-                    <ReferenceLine
-                      x={avgX}
-                      stroke={colors.muted}
-                      strokeDasharray="4 4"
-                      label={{
-                        value: `Avg per-capita: ${formatInr(avgX)}`,
-                        position: 'insideTopRight',
-                        fill: colors.axisText,
-                        fontSize: 11,
-                      }}
-                    />
-                    <ReferenceLine
-                      y={avgY}
-                      stroke={colors.muted}
-                      strokeDasharray="4 4"
-                      label={{
-                        value: `Avg growth: ${avgY.toFixed(1)}%`,
-                        position: 'insideBottomLeft',
-                        fill: colors.axisText,
-                        fontSize: 11,
-                      }}
-                    />
-                    {REGION_ORDER.map((region) => (
-                      <Scatter
-                        key={region}
-                        name={region}
-                        data={points.filter((p) => p.region === region)}
-                        fill={regionColors[region]}
-                        fillOpacity={0.7}
-                        stroke={regionColors[region]}
-                        strokeWidth={1}
-                      >
-                        <LabelList
-                          dataKey="outlierLabel"
-                          content={(props) => <OutlierLabel {...props} ink={colors.ink} surface={colors.surface} />}
+                    <ResponsiveContainer width="100%" height={h}>
+                      <ScatterChart margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
+                        <CartesianGrid stroke={colors.grid} />
+                        <XAxis
+                          type="number"
+                          dataKey="perCapita"
+                          name="Per-capita NSDP"
+                          tick={{ fontSize: 12, fill: colors.axisText }}
+                          axisLine={{ stroke: colors.grid }}
+                          tickLine={false}
+                          tickFormatter={(v: number) => formatInr(v)}
                         />
-                      </Scatter>
-                    ))}
-                  </ScatterChart>
-                </ResponsiveContainer>
-              </div>
+                        <YAxis
+                          type="number"
+                          dataKey="cagr"
+                          name="Real per-capita growth"
+                          tick={{ fontSize: 12, fill: colors.axisText }}
+                          axisLine={{ stroke: colors.grid }}
+                          tickLine={false}
+                          tickFormatter={(v: number) => `${v.toFixed(0)}%`}
+                          width={56}
+                        />
+                        <ZAxis type="number" dataKey="scale" range={[120, 1800]} domain={scaleDomain} />
+                        <Tooltip
+                          content={(props) => <GrowthVsProsperityTooltip {...props} regionColors={regionColors} muted={colors.muted} />}
+                          cursor={{ strokeDasharray: '3 3' }}
+                        />
+                        <Legend verticalAlign="bottom" content={(props) => <GrowthVsProsperityLegend {...props} />} />
+                        <ReferenceLine
+                          x={avgX}
+                          stroke={colors.muted}
+                          strokeDasharray="4 4"
+                          label={{
+                            value: `Avg per-capita: ${formatInr(avgX)}`,
+                            position: 'insideTopRight',
+                            fill: colors.axisText,
+                            fontSize: 11,
+                          }}
+                        />
+                        <ReferenceLine
+                          y={avgY}
+                          stroke={colors.muted}
+                          strokeDasharray="4 4"
+                          label={{
+                            value: `Avg growth: ${avgY.toFixed(1)}%`,
+                            position: 'insideBottomLeft',
+                            fill: colors.axisText,
+                            fontSize: 11,
+                          }}
+                        />
+                        {REGION_ORDER.map((region) => (
+                          <Scatter
+                            key={region}
+                            name={region}
+                            data={points.filter((p) => p.region === region)}
+                            fill={regionColors[region]}
+                            fillOpacity={0.7}
+                            stroke={regionColors[region]}
+                            strokeWidth={1}
+                          >
+                            <LabelList
+                              dataKey="outlierLabel"
+                              content={(props) => <OutlierLabel {...props} ink={colors.ink} surface={colors.surface} />}
+                            />
+                          </Scatter>
+                        ))}
+                      </ScatterChart>
+                    </ResponsiveContainer>
+                  </>
+                )}
+              </ExpandableChart>
             </div>
             <span className="axis-title-x">Per-capita NSDP, latest year (current prices)</span>
           </div>

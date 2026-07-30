@@ -55,6 +55,7 @@
 
 .aggregate-toggle {
   display: inline-flex;
+  flex-wrap: wrap;
   gap: 8px;
 }
 

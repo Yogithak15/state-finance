@@ -67,7 +67,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeCategory, onSelectCategory, isO
 
         <div className="sidebar-footer">
           <span className="sidebar-footer-dot" />
-          <span>Data last refreshed manually</span>
+          <span>Data is up to date</span>
         </div>
       </aside>
     </>

@@ -15,6 +15,7 @@ import { fetchPwFinancialYearSeries, PW_METRICS } from '../../api/priceWagesApi'
 import { formatInr } from '../../utils/format';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
+import { ExpandableChart } from '../ExpandableChart';
 import './RuralWageRatesChart.css';
 
 interface TrendRow {
@@ -245,8 +246,9 @@ const RuralWageRatesChart: React.FC = () => {
 
       {!error && (selected.length > 0 || showAverage) && (
         <>
-          <div className="rural-wage-chart">
-            <ResponsiveContainer width="100%" height={380}>
+          <ExpandableChart title="6 · Rural Daily Wage Rates" height={380} className="rural-wage-chart">
+            {(h) => (
+            <ResponsiveContainer width="100%" height={h}>
               <LineChart data={chartData} margin={{ top: 8, right: 24, left: 8, bottom: 8 }}>
                 <CartesianGrid stroke={colors.grid} />
                 <XAxis
@@ -291,7 +293,8 @@ const RuralWageRatesChart: React.FC = () => {
                 )}
               </LineChart>
             </ResponsiveContainer>
-          </div>
+            )}
+          </ExpandableChart>
           <div className="rural-wage-footnote">
             {occupationLabel} Workers (Men) · average daily wage, {yearRange.start} to {yearRange.end}.
             Yearly figures are averaged from monthly data; gaps mean too few wage quotations were reported

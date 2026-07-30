@@ -1,21 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  Cell,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  LabelList,
-  TooltipContentProps,
-} from 'recharts';
 import { fetchFiscalFinancialYearSeries, FISCAL_METRICS } from '../../api/fiscalApi';
 import { formatInrShort } from '../../utils/format';
 import { rankColor } from '../../utils/rankColor';
-import { useTheme, ThemeMode } from '../../theme/ThemeContext';
-import { CHART_COLORS } from '../../theme/chartColors';
+import { useTheme } from '../../theme/ThemeContext';
 import './FiscalStateRankingsChart.css';
 
 interface MetricRow {
@@ -45,7 +32,6 @@ type ShowMode = 'top15' | 'bottom15' | 'all';
 
 const FiscalStateRankingsChart: React.FC = () => {
   const { theme } = useTheme();
-  const colors = CHART_COLORS[theme];
   const [metricId, setMetricId] = useState<number>(FISCAL_METRICS.grossFiscalDeficit);
   const [year, setYear] = useState<string>('');
   const [show, setShow] = useState<ShowMode>('top15');
@@ -98,6 +84,10 @@ const FiscalStateRankingsChart: React.FC = () => {
     { id: 'bottom15', label: 'Bottom 15' },
     { id: 'all', label: `All (${yearRows.length})` },
   ];
+
+  // Rank position within the FULL year list (not just the displayed slice) —
+  // "Bottom 15" should still read as ranks 17-31, not restart at 1.
+  const rankOf = (dimensionId: number) => yearRows.findIndex((r) => r.dimension_id === dimensionId);
 
   return (
     <div className="fiscal-rankings">
@@ -168,47 +158,21 @@ const FiscalStateRankingsChart: React.FC = () => {
 
       {!error && !loading && displayRows.length > 0 && (
         <>
-          <div className="fiscal-rankings-chart" style={{ height: Math.max(displayRows.length * 32, 120) }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={displayRows}
-                layout="vertical"
-                margin={{ top: 4, right: 70, left: 8, bottom: 4 }}
-                barCategoryGap={6}
-              >
-                <CartesianGrid stroke={colors.grid} horizontal={false} />
-                <XAxis
-                  type="number"
-                  tick={{ fontSize: 12, fill: colors.axisText }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                  tickFormatter={(v: number) => formatInrShort(v)}
-                />
-                <YAxis
-                  type="category"
-                  dataKey="dimension_name"
-                  tick={{ fontSize: 12.5, fill: colors.ink }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                  width={110}
-                />
-                <Tooltip
-                  cursor={false}
-                  content={(props) => <FiscalRankingsTooltip {...props} rows={displayRows} theme={theme} />}
-                />
-                <Bar dataKey="value" radius={2} maxBarSize={22} activeBar={{ stroke: 'transparent' }}>
-                  {displayRows.map((row, index) => (
-                    <Cell key={row.dimension_id} fill={rankColor(index, displayRows.length, theme)} />
-                  ))}
-                  <LabelList
-                    dataKey="value"
-                    position="right"
-                    formatter={(v: React.ReactNode) => formatInrShort(Number(v))}
-                    style={{ fontSize: 11.5, fill: colors.axisText }}
+          <div className="fiscal-rankings-list">
+            {displayRows.map((row) => {
+              const index = rankOf(row.dimension_id);
+              return (
+                <div className="fiscal-rankings-row" key={row.dimension_id}>
+                  <span className="fiscal-rankings-row-rank">{index + 1}</span>
+                  <span
+                    className="fiscal-rankings-row-dot"
+                    style={{ background: rankColor(index, yearRows.length, theme) }}
                   />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+                  <span className="fiscal-rankings-row-name">{row.dimension_name}</span>
+                  <span className="fiscal-rankings-row-value">{formatInrShort(row.value)}</span>
+                </div>
+              );
+            })}
           </div>
           <div className="fiscal-rankings-footnote">
             {metric.label} · {year} · {displayRows.length} of {yearRows.length} states/UTs with data shown.
@@ -216,30 +180,6 @@ const FiscalStateRankingsChart: React.FC = () => {
           </div>
         </>
       )}
-    </div>
-  );
-};
-
-const FiscalRankingsTooltip: React.FC<TooltipContentProps & { rows: MetricRow[]; theme: ThemeMode }> = ({
-  active,
-  payload,
-  rows,
-  theme,
-}) => {
-  if (!active || !payload || !payload.length) return null;
-  const dimensionId = payload[0]?.payload?.dimension_id as number | undefined;
-  const rowIndex = rows.findIndex((r) => r.dimension_id === dimensionId);
-  const row = rows[rowIndex];
-  if (!row) return null;
-
-  return (
-    <div className="fiscal-rankings-tooltip">
-      <span
-        className="fiscal-rankings-tooltip-key"
-        style={{ background: rankColor(rowIndex, rows.length, theme) }}
-      />
-      <span className="fiscal-rankings-tooltip-name">{row.dimension_name}</span>
-      <span className="fiscal-rankings-tooltip-value">{formatInrShort(row.value)}</span>
     </div>
   );
 };

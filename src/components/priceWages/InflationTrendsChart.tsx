@@ -13,6 +13,7 @@ import { fetchPwFinancialYearSeries, PW_METRICS } from '../../api/priceWagesApi'
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
 import { SearchIcon } from '../icons';
+import { ExpandableChart } from '../ExpandableChart';
 import './InflationTrendsChart.css';
 
 interface TrendRow {
@@ -264,8 +265,9 @@ const InflationTrendsChart: React.FC = () => {
       )}
 
       {!error && (selected.length > 0 || showAverage) && (
-        <div className="inflation-trends-chart">
-          <ResponsiveContainer width="100%" height={360}>
+        <ExpandableChart title="1 · Inflation Trends over Time" height={360} className="inflation-trends-chart">
+          {(h) => (
+          <ResponsiveContainer width="100%" height={h}>
             <LineChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
               <CartesianGrid stroke={colors.grid} />
               <XAxis
@@ -316,7 +318,8 @@ const InflationTrendsChart: React.FC = () => {
               )}
             </LineChart>
           </ResponsiveContainer>
-        </div>
+          )}
+        </ExpandableChart>
       )}
     </div>
   );

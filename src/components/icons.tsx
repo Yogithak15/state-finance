@@ -112,3 +112,9 @@ export const SearchIcon: React.FC<IconProps> = (props) => (
     <path d="M21 21l-4.3-4.3" />
   </svg>
 );
+
+export const ExpandIcon: React.FC<IconProps> = (props) => (
+  <svg {...base} {...props}>
+    <path d="M9 4H4v5M15 4h5v5M4 15v5h5M20 15v5h-5" />
+  </svg>
+);

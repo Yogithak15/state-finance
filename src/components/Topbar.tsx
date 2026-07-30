@@ -24,7 +24,6 @@ const Topbar: React.FC<TopbarProps> = ({ category, onMenuClick }) => {
           <MenuIcon width={20} height={20} />
         </button>
         <div>
-          <div className="topbar-breadcrumb">Dashboard / {category.shortLabel}</div>
           <h1 className="topbar-title">{category.label}</h1>
         </div>
       </div>

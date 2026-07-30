@@ -15,6 +15,7 @@ import { fetchBankingFinancialYearSeries, BANKING_METRICS } from '../../api/bank
 import { formatInrShort } from '../../utils/format';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
+import { ExpandableChart } from '../ExpandableChart';
 import './CreditMixChart.css';
 
 interface MetricRow {
@@ -180,40 +181,46 @@ const CreditMixChart: React.FC = () => {
 
       {!error && !loading && displayRows.length > 0 && (
         <>
-          <div className="credit-mix-chart" style={{ height: Math.max(displayRows.length * 32, 120) }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={displayRows}
-                layout="vertical"
-                stackOffset="expand"
-                margin={{ top: 4, right: 16, left: 8, bottom: 4 }}
-                barCategoryGap={6}
-              >
-                <CartesianGrid stroke={colors.grid} horizontal={false} />
-                <XAxis
-                  type="number"
-                  tick={{ fontSize: 12, fill: colors.axisText }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                  tickFormatter={(v: number) => `${Math.round(v * 100)}%`}
-                />
-                <YAxis
-                  type="category"
-                  dataKey="state"
-                  tick={{ fontSize: 12.5, fill: colors.ink }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                  width={110}
-                />
-                <Tooltip content={(props) => <CreditMixTooltip {...props} />} />
-                <Legend content={(props) => <CreditMixLegend {...props} />} />
-                <Bar dataKey={AG_KEY} stackId="mix" fill={AG_COLOR} />
-                <Bar dataKey={IND_KEY} stackId="mix" fill={IND_COLOR} />
-                <Bar dataKey={PL_KEY} stackId="mix" fill={PL_COLOR} />
-                <Bar dataKey={OTHER_KEY} stackId="mix" fill={OTHER_COLOR} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <ExpandableChart
+            title="4 · Credit Mix"
+            height={Math.max(displayRows.length * 32, 120)}
+            className="credit-mix-chart"
+          >
+            {(h) => (
+              <ResponsiveContainer width="100%" height={h}>
+                <BarChart
+                  data={displayRows}
+                  layout="vertical"
+                  stackOffset="expand"
+                  margin={{ top: 4, right: 16, left: 8, bottom: 4 }}
+                  barCategoryGap={6}
+                >
+                  <CartesianGrid stroke={colors.grid} horizontal={false} />
+                  <XAxis
+                    type="number"
+                    tick={{ fontSize: 12, fill: colors.axisText }}
+                    axisLine={{ stroke: colors.grid }}
+                    tickLine={false}
+                    tickFormatter={(v: number) => `${Math.round(v * 100)}%`}
+                  />
+                  <YAxis
+                    type="category"
+                    dataKey="state"
+                    tick={{ fontSize: 12.5, fill: colors.ink }}
+                    axisLine={{ stroke: colors.grid }}
+                    tickLine={false}
+                    width={110}
+                  />
+                  <Tooltip cursor={false} content={(props) => <CreditMixTooltip {...props} />} />
+                  <Legend content={(props) => <CreditMixLegend {...props} />} />
+                  <Bar dataKey={AG_KEY} stackId="mix" fill={AG_COLOR} activeBar={{ stroke: 'transparent' }} />
+                  <Bar dataKey={IND_KEY} stackId="mix" fill={IND_COLOR} activeBar={{ stroke: 'transparent' }} />
+                  <Bar dataKey={PL_KEY} stackId="mix" fill={PL_COLOR} activeBar={{ stroke: 'transparent' }} />
+                  <Bar dataKey={OTHER_KEY} stackId="mix" fill={OTHER_COLOR} activeBar={{ stroke: 'transparent' }} />
+                </BarChart>
+              </ResponsiveContainer>
+            )}
+          </ExpandableChart>
           <div className="credit-mix-footnote">Sorted by total SCB credit outstanding, largest first.</div>
         </>
       )}

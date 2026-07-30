@@ -141,6 +141,7 @@ const HealthProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={pct1}
             colors={colors}
+            title="Anaemia prevalence by NFHS round (%)"
           />
         </ChartBlock>
         <ChartBlock title="PHC doctors over time">
@@ -153,6 +154,7 @@ const HealthProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={intFmt}
             colors={colors}
+            title="PHC doctors over time"
           />
         </ChartBlock>
         <ChartBlock title="CHC specialists over time">
@@ -165,6 +167,7 @@ const HealthProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={intFmt}
             colors={colors}
+            title="CHC specialists over time"
           />
         </ChartBlock>
         <ChartBlock title="Government hospitals over time (rural vs urban vs total)">
@@ -177,6 +180,7 @@ const HealthProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={intFmt}
             colors={colors}
+            title="Government hospitals over time (rural vs urban vs total)"
           />
         </ChartBlock>
         <ChartBlock title="Government hospital beds over time (rural vs urban vs total)">
@@ -189,6 +193,7 @@ const HealthProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={intFmt}
             colors={colors}
+            title="Government hospital beds over time (rural vs urban vs total)"
           />
         </ChartBlock>
         <ChartBlock title="Public expenditure on health over time">
@@ -203,6 +208,7 @@ const HealthProfileSection: React.FC<Props> = ({ state }) => {
             ]}
             yFormatter={formatInrShort}
             colors={colors}
+            title="Public expenditure on health over time"
           />
         </ChartBlock>
       </ChartGrid>

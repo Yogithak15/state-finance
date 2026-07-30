@@ -43,13 +43,6 @@ const CategoryPanel: React.FC<CategoryPanelProps> = ({
 
   return (
     <div className="category-panel">
-      <div className="category-intro">
-        <span className="category-intro-icon">
-          <Icon width={22} height={22} />
-        </span>
-        <p className="category-intro-text">{category.description}</p>
-      </div>
-
       {category.id === 'sdp' && (
         <>
           <SdpStats stats={sdpStats ?? null} error={sdpError ?? null} />

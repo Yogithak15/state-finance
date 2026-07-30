@@ -22,6 +22,7 @@ import { formatInrShort } from '../../utils/format';
 import { useTheme } from '../../theme/ThemeContext';
 import { CHART_COLORS } from '../../theme/chartColors';
 import { Region, REGION_MAP, REGION_ORDER } from '../../utils/regionMap';
+import { ExpandableChart } from '../ExpandableChart';
 import './FiscalStressMapChart.css';
 
 interface MetricRow {
@@ -251,66 +252,70 @@ const FiscalStressMapChart: React.FC = () => {
         <>
           <div className="fiscal-stress-map-chart-wrap">
             <span className="fiscal-stress-map-axis-caption-y">Gross fiscal deficit, % of GSDP ({year})</span>
-            <ResponsiveContainer width="100%" height={460}>
-              <ScatterChart margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
-                <CartesianGrid stroke={colors.grid} />
-                <XAxis
-                  type="number"
-                  dataKey="debtPct"
-                  name="Outstanding debt"
-                  tick={{ fontSize: 12, fill: colors.axisText }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                  tickFormatter={(v: number) => pct(v)}
-                />
-                <YAxis
-                  type="number"
-                  dataKey="deficitPct"
-                  name="Gross fiscal deficit"
-                  tick={{ fontSize: 12, fill: colors.axisText }}
-                  axisLine={{ stroke: colors.grid }}
-                  tickLine={false}
-                  tickFormatter={(v: number) => pct(v)}
-                  width={48}
-                />
-                <Tooltip
-                  content={(props) => <StressMapTooltip {...props} />}
-                  cursor={{ strokeDasharray: '3 3' }}
-                />
-                <Legend verticalAlign="bottom" content={(props) => <StressMapLegend {...props} />} />
-                <ReferenceLine
-                  x={STRESS_DEBT_THRESHOLD}
-                  stroke={colors.muted}
-                  strokeDasharray="4 4"
-                  label={{
-                    value: `${STRESS_DEBT_THRESHOLD}% debt/GSDP`,
-                    position: 'insideTopRight',
-                    fill: colors.axisText,
-                    fontSize: 11,
-                  }}
-                />
-                <ReferenceLine
-                  y={FISCAL_DEFICIT_GSDP_LIMIT}
-                  stroke={colors.muted}
-                  strokeDasharray="4 4"
-                  label={{
-                    value: `FRBM ${FISCAL_DEFICIT_GSDP_LIMIT}% ceiling`,
-                    position: 'insideBottomLeft',
-                    fill: colors.axisText,
-                    fontSize: 11,
-                  }}
-                />
-                {REGION_ORDER.map((region) => (
-                  <Scatter
-                    key={region}
-                    name={region}
-                    data={pointsWithSelection.filter((p) => p.region === region)}
-                    fill={regionColors[region]}
-                    shape={(props: any) => <BubbleShape {...props} radiusFor={radiusFor} />}
-                  />
-                ))}
-              </ScatterChart>
-            </ResponsiveContainer>
+            <ExpandableChart title="7 · Fiscal Stress Map" height={460}>
+              {(h) => (
+                <ResponsiveContainer width="100%" height={h}>
+                  <ScatterChart margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
+                    <CartesianGrid stroke={colors.grid} />
+                    <XAxis
+                      type="number"
+                      dataKey="debtPct"
+                      name="Outstanding debt"
+                      tick={{ fontSize: 12, fill: colors.axisText }}
+                      axisLine={{ stroke: colors.grid }}
+                      tickLine={false}
+                      tickFormatter={(v: number) => pct(v)}
+                    />
+                    <YAxis
+                      type="number"
+                      dataKey="deficitPct"
+                      name="Gross fiscal deficit"
+                      tick={{ fontSize: 12, fill: colors.axisText }}
+                      axisLine={{ stroke: colors.grid }}
+                      tickLine={false}
+                      tickFormatter={(v: number) => pct(v)}
+                      width={48}
+                    />
+                    <Tooltip
+                      content={(props) => <StressMapTooltip {...props} />}
+                      cursor={{ strokeDasharray: '3 3' }}
+                    />
+                    <Legend verticalAlign="bottom" content={(props) => <StressMapLegend {...props} />} />
+                    <ReferenceLine
+                      x={STRESS_DEBT_THRESHOLD}
+                      stroke={colors.muted}
+                      strokeDasharray="4 4"
+                      label={{
+                        value: `${STRESS_DEBT_THRESHOLD}% debt/GSDP`,
+                        position: 'insideTopRight',
+                        fill: colors.axisText,
+                        fontSize: 11,
+                      }}
+                    />
+                    <ReferenceLine
+                      y={FISCAL_DEFICIT_GSDP_LIMIT}
+                      stroke={colors.muted}
+                      strokeDasharray="4 4"
+                      label={{
+                        value: `FRBM ${FISCAL_DEFICIT_GSDP_LIMIT}% ceiling`,
+                        position: 'insideBottomLeft',
+                        fill: colors.axisText,
+                        fontSize: 11,
+                      }}
+                    />
+                    {REGION_ORDER.map((region) => (
+                      <Scatter
+                        key={region}
+                        name={region}
+                        data={pointsWithSelection.filter((p) => p.region === region)}
+                        fill={regionColors[region]}
+                        shape={(props: any) => <BubbleShape {...props} radiusFor={radiusFor} />}
+                      />
+                    ))}
+                  </ScatterChart>
+                </ResponsiveContainer>
+              )}
+            </ExpandableChart>
             <span className="fiscal-stress-map-axis-caption-x">Outstanding debt, % of GSDP ({year})</span>
           </div>
           <div className="fiscal-stress-map-footnote">

@@ -14,6 +14,7 @@ import {
   TooltipContentProps,
   DefaultLegendContentProps,
 } from 'recharts';
+import { ExpandableChart } from '../ExpandableChart';
 import './profileWidgets.css';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -220,6 +221,9 @@ interface TrendChartProps {
   // Off by default only for callers that already show state/series identity
   // another way (e.g. colored chips) and would otherwise show it twice.
   showLegend?: boolean;
+  // Modal header text when expanded. Falls back to a generic label so
+  // omitting it at a call site degrades gracefully instead of breaking.
+  title?: string;
 }
 
 export const TrendChart: React.FC<TrendChartProps> = ({
@@ -230,51 +234,56 @@ export const TrendChart: React.FC<TrendChartProps> = ({
   colors,
   referenceLines,
   showLegend = true,
+  title = 'Chart',
 }) => {
   const TooltipContent = makeTooltip(yFormatter);
   return (
-    <ResponsiveContainer width="100%" height={height}>
-      <LineChart data={data} margin={{ top: 8, right: 16, left: 4, bottom: 4 }}>
-        <CartesianGrid stroke={colors.grid} vertical={false} />
-        <XAxis
-          dataKey="period"
-          tick={{ fontSize: 11, fill: colors.axisText }}
-          axisLine={{ stroke: colors.grid }}
-          tickLine={false}
-        />
-        <YAxis
-          tick={{ fontSize: 11, fill: colors.axisText }}
-          axisLine={{ stroke: colors.grid }}
-          tickLine={false}
-          tickFormatter={yFormatter}
-          width={60}
-        />
-        <Tooltip content={(props) => <TooltipContent {...props} />} />
-        {showLegend && <Legend content={(props) => <ProfileLegend {...props} />} />}
-        {(referenceLines ?? []).map((rl) => (
-          <ReferenceLine
-            key={rl.label}
-            y={rl.y}
-            stroke={rl.color}
-            strokeDasharray="4 4"
-            label={{ value: rl.label, position: 'insideTopRight', fill: rl.color, fontSize: 11 }}
-          />
-        ))}
-        {series.map((s) => (
-          <Line
-            key={s.key}
-            type="monotone"
-            dataKey={s.key}
-            name={s.label}
-            stroke={s.color}
-            strokeWidth={2}
-            dot={{ r: 2.5, fill: s.color, stroke: colors.surface, strokeWidth: 1 }}
-            activeDot={{ r: 4, fill: s.color, stroke: colors.surface, strokeWidth: 1 }}
-            connectNulls
-          />
-        ))}
-      </LineChart>
-    </ResponsiveContainer>
+    <ExpandableChart title={title} height={height}>
+      {(h) => (
+        <ResponsiveContainer width="100%" height={h}>
+          <LineChart data={data} margin={{ top: 8, right: 16, left: 4, bottom: 4 }}>
+            <CartesianGrid stroke={colors.grid} vertical={false} />
+            <XAxis
+              dataKey="period"
+              tick={{ fontSize: 11, fill: colors.axisText }}
+              axisLine={{ stroke: colors.grid }}
+              tickLine={false}
+            />
+            <YAxis
+              tick={{ fontSize: 11, fill: colors.axisText }}
+              axisLine={{ stroke: colors.grid }}
+              tickLine={false}
+              tickFormatter={yFormatter}
+              width={60}
+            />
+            <Tooltip content={(props) => <TooltipContent {...props} />} />
+            {showLegend && <Legend content={(props) => <ProfileLegend {...props} />} />}
+            {(referenceLines ?? []).map((rl) => (
+              <ReferenceLine
+                key={rl.label}
+                y={rl.y}
+                stroke={rl.color}
+                strokeDasharray="4 4"
+                label={{ value: rl.label, position: 'insideTopRight', fill: rl.color, fontSize: 11 }}
+              />
+            ))}
+            {series.map((s) => (
+              <Line
+                key={s.key}
+                type="monotone"
+                dataKey={s.key}
+                name={s.label}
+                stroke={s.color}
+                strokeWidth={2}
+                dot={{ r: 2.5, fill: s.color, stroke: colors.surface, strokeWidth: 1 }}
+                activeDot={{ r: 4, fill: s.color, stroke: colors.surface, strokeWidth: 1 }}
+                connectNulls
+              />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
+      )}
+    </ExpandableChart>
   );
 };
 
@@ -292,6 +301,7 @@ interface ComparisonBarChartProps {
   height?: number;
   colors: PaletteSubset;
   referenceLines?: ReferenceLineDef[];
+  title?: string;
 }
 
 export const ComparisonBarChart: React.FC<ComparisonBarChartProps> = ({
@@ -301,41 +311,46 @@ export const ComparisonBarChart: React.FC<ComparisonBarChartProps> = ({
   height = 240,
   colors,
   referenceLines,
+  title = 'Chart',
 }) => {
   const TooltipContent = makeTooltip(yFormatter);
   return (
-    <ResponsiveContainer width="100%" height={height}>
-      <BarChart data={data} margin={{ top: 8, right: 16, left: 4, bottom: 4 }}>
-        <CartesianGrid stroke={colors.grid} vertical={false} />
-        <XAxis
-          dataKey="category"
-          tick={{ fontSize: 11.5, fill: colors.axisText }}
-          axisLine={{ stroke: colors.grid }}
-          tickLine={false}
-        />
-        <YAxis
-          tick={{ fontSize: 11, fill: colors.axisText }}
-          axisLine={{ stroke: colors.grid }}
-          tickLine={false}
-          tickFormatter={yFormatter}
-          width={52}
-        />
-        <Tooltip content={(props) => <TooltipContent {...props} />} />
-        <Legend content={(props) => <ProfileLegend {...props} />} />
-        {(referenceLines ?? []).map((rl) => (
-          <ReferenceLine
-            key={rl.label}
-            y={rl.y}
-            stroke={rl.color}
-            strokeDasharray="4 4"
-            label={{ value: rl.label, position: 'insideTopRight', fill: rl.color, fontSize: 11 }}
-          />
-        ))}
-        {series.map((s) => (
-          <Bar key={s.key} dataKey={s.key} name={s.label} fill={s.color} activeBar={{ stroke: 'transparent' }} />
-        ))}
-      </BarChart>
-    </ResponsiveContainer>
+    <ExpandableChart title={title} height={height}>
+      {(h) => (
+        <ResponsiveContainer width="100%" height={h}>
+          <BarChart data={data} margin={{ top: 8, right: 16, left: 4, bottom: 4 }}>
+            <CartesianGrid stroke={colors.grid} vertical={false} />
+            <XAxis
+              dataKey="category"
+              tick={{ fontSize: 11.5, fill: colors.axisText }}
+              axisLine={{ stroke: colors.grid }}
+              tickLine={false}
+            />
+            <YAxis
+              tick={{ fontSize: 11, fill: colors.axisText }}
+              axisLine={{ stroke: colors.grid }}
+              tickLine={false}
+              tickFormatter={yFormatter}
+              width={52}
+            />
+            <Tooltip cursor={false} content={(props) => <TooltipContent {...props} />} />
+            <Legend content={(props) => <ProfileLegend {...props} />} />
+            {(referenceLines ?? []).map((rl) => (
+              <ReferenceLine
+                key={rl.label}
+                y={rl.y}
+                stroke={rl.color}
+                strokeDasharray="4 4"
+                label={{ value: rl.label, position: 'insideTopRight', fill: rl.color, fontSize: 11 }}
+              />
+            ))}
+            {series.map((s) => (
+              <Bar key={s.key} dataKey={s.key} name={s.label} fill={s.color} activeBar={{ stroke: 'transparent' }} />
+            ))}
+          </BarChart>
+        </ResponsiveContainer>
+      )}
+    </ExpandableChart>
   );
 };
 
