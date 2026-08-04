@@ -251,7 +251,7 @@ const DeficitTrendsChart: React.FC = () => {
       )}
 
       {!error && selected.length > 0 && (
-        <ExpandableChart title="1 · Deficit Trends over Time" height={360} className="deficit-trends-chart">
+        <ExpandableChart title="1 · Deficit Trends over Time" height={380} className="deficit-trends-chart">
           {(h) => (
             <ResponsiveContainer width="100%" height={h}>
               <LineChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>

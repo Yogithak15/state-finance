@@ -284,7 +284,7 @@ const BorrowingsGuaranteesChart: React.FC = () => {
           )}
 
           {!guaranteeError && !guaranteeLoading && guaranteeChartData.length > 0 && (
-            <ExpandableChart title="6b · Outstanding Guarantees" height={340} className="borrowings-guarantees-chart">
+            <ExpandableChart title="6b · Outstanding Guarantees" height={380} className="borrowings-guarantees-chart">
               {(h) => (
                 <ResponsiveContainer width="100%" height={h}>
                   <AreaChart data={guaranteeChartData} margin={{ top: 8, right: 24, left: 8, bottom: 8 }}>

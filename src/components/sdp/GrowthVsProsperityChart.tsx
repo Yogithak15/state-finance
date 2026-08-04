@@ -183,7 +183,7 @@ const GrowthVsProsperityChart: React.FC = () => {
 
               <ExpandableChart
                 title="7 · Growth vs Prosperity"
-                height={460}
+                height={380}
                 className="growth-vs-prosperity-chart-plot"
               >
                 {(h) => (

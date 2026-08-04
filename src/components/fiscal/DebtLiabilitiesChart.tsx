@@ -536,7 +536,7 @@ const DebtLiabilitiesChart: React.FC = () => {
             <>
               <ExpandableChart
                 title="5 · Debt & Liabilities — Debt ÷ GSDP"
-                height={360}
+                height={380}
                 className="debt-liabilities-chart"
               >
                 {(h) => (

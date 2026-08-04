@@ -288,7 +288,7 @@ const DeficitGsdpChart: React.FC = () => {
         <>
           <ExpandableChart
             title="2 · Deficit as a Share of the Economy"
-            height={360}
+            height={380}
             className="deficit-gsdp-chart"
           >
             {(h) => (

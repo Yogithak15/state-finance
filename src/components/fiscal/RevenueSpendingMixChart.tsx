@@ -208,7 +208,7 @@ const RevenueSpendingMixChart: React.FC = () => {
 
       {!error && !loading && chartData.length > 0 && (
         <>
-          <ExpandableChart title="4 · Revenue & Spending Mix" height={420} className="revenue-spending-mix-chart">
+          <ExpandableChart title="4 · Revenue & Spending Mix" height={380} className="revenue-spending-mix-chart">
             {(h) => (
               <ResponsiveContainer width="100%" height={h}>
                 <AreaChart data={chartData} stackOffset="expand" margin={{ top: 8, right: 16, left: 8, bottom: 8 }}>

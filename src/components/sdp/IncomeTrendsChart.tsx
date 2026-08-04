@@ -253,7 +253,7 @@ const IncomeTrendsChart: React.FC = () => {
       )}
 
       {!error && selected.length > 0 && (
-        <ExpandableChart title="1 · Income Trends over Time" height={360} className="income-trends-chart">
+        <ExpandableChart title="1 · Income Trends over Time" height={380} className="income-trends-chart">
           {(h) => (
             <ResponsiveContainer width="100%" height={h}>
               <LineChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>

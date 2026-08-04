@@ -151,8 +151,6 @@ const GrowthLeagueChart: React.FC = () => {
     return result.sort((a, b) => b.cagr - a.cagr);
   }, [byState, periodMode, globalStart, globalEnd]);
 
-  const metricLabel = METRIC_OPTIONS.find((m) => m.id === metricId)?.label ?? '';
-
   return (
     <div className="growth-league">
       <h3 className="growth-league-title">3 · Growth League Table</h3>

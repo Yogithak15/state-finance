@@ -144,7 +144,7 @@ const EconomicWeightChart: React.FC = () => {
 
       {!error && !loading && chartData.length > 0 && (
         <>
-          <ExpandableChart title="4 · Economic Weight Shift" height={420} className="economic-weight-chart">
+          <ExpandableChart title="4 · Economic Weight Shift" height={380} className="economic-weight-chart">
             {(h) => (
               <ResponsiveContainer width="100%" height={h}>
                 <AreaChart data={chartData} stackOffset="expand" margin={{ top: 8, right: 16, left: 8, bottom: 8 }}>

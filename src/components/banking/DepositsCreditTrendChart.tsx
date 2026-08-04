@@ -261,7 +261,7 @@ const DepositsCreditTrendChart: React.FC = () => {
       {!error && selected.length > 0 && (
         <ExpandableChart
           title="1 · Deposits & Credit over Time"
-          height={360}
+          height={380}
           className="deposits-credit-trend-chart"
         >
           {(h) => (

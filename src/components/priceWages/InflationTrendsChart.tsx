@@ -265,7 +265,7 @@ const InflationTrendsChart: React.FC = () => {
       )}
 
       {!error && (selected.length > 0 || showAverage) && (
-        <ExpandableChart title="1 · Inflation Trends over Time" height={360} className="inflation-trends-chart">
+        <ExpandableChart title="1 · Inflation Trends over Time" height={380} className="inflation-trends-chart">
           {(h) => (
           <ResponsiveContainer width="100%" height={h}>
             <LineChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>

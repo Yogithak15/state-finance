@@ -173,7 +173,7 @@ const RuralVsUrbanReachChart: React.FC = () => {
             <span className="rural-urban-axis-title-y">RRB branches per lakh population ({year})</span>
             <ExpandableChart
               title="6 · Rural vs Urban Banking Reach"
-              height={460}
+              height={380}
               className="rural-urban-reach-chart-plot"
             >
               {(h) => (

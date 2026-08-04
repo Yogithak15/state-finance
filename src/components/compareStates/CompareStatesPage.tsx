@@ -269,7 +269,7 @@ const CompareStatesPage: React.FC = () => {
             data={chartData}
             series={selected.map((name) => ({ key: name, label: name, color: colorMap[name] ?? colors.ink }))}
             yFormatter={formatValue}
-            height={360}
+            height={380}
             colors={colors}
             showLegend={false}
             title={`${metric.label} — state comparison`}

@@ -198,7 +198,7 @@ const PwInflationVsGrowthChart: React.FC = () => {
         <>
           <div className="pw-inflation-growth-chart-row">
             <span className="pw-axis-title-y">Real per-capita growth, CAGR since {inflationYearRange.start}</span>
-            <ExpandableChart title="4 · Inflation vs Real Growth" height={460} className="pw-inflation-growth-chart-plot">
+            <ExpandableChart title="4 · Inflation vs Real Growth" height={380} className="pw-inflation-growth-chart-plot">
               {(h) => (
               <ResponsiveContainer width="100%" height={h}>
                 <ScatterChart margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>

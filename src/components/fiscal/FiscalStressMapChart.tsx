@@ -252,7 +252,7 @@ const FiscalStressMapChart: React.FC = () => {
         <>
           <div className="fiscal-stress-map-chart-wrap">
             <span className="fiscal-stress-map-axis-caption-y">Gross fiscal deficit, % of GSDP ({year})</span>
-            <ExpandableChart title="7 · Fiscal Stress Map" height={460}>
+            <ExpandableChart title="7 · Fiscal Stress Map" height={380}>
               {(h) => (
                 <ResponsiveContainer width="100%" height={h}>
                   <ScatterChart margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>

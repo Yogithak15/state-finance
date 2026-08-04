@@ -258,7 +258,7 @@ const CreditDepositRatioChart: React.FC = () => {
 
       {!error && selected.length > 0 && (
         <>
-          <ExpandableChart title="2 · Credit-Deposit Ratio" height={360} className="credit-deposit-ratio-chart">
+          <ExpandableChart title="2 · Credit-Deposit Ratio" height={380} className="credit-deposit-ratio-chart">
             {(h) => (
               <ResponsiveContainer width="100%" height={h}>
                 <LineChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 8 }}>
